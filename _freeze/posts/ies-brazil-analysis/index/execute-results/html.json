@@ -1,7 +1,7 @@
 {
-  "hash": "94e90f694d37348ca456d4ae195e8d1d",
+  "hash": "3e705243130b731f89ac91a0c6597d13",
   "result": {
-    "markdown": "---\ntitle: \"IES Analysis Brazil\"\nauthor: \"Fred Vasconcelos\"\ndate: \"2023-07-31\"\ncategories: [education, analysis, r, ggplot2]\nimage: \"image.jpg\"\n---\n\n\n# Description\n\nHere we analyse data from superior educational institutions of Brazil. \n\n\n\n",
+    "markdown": "---\ntitle: \"IES Analysis Brazil\"\nauthor: \"Fred Vasconcelos\"\ndate: \"2023-07-31\"\ncategories: [education, analysis, r, ggplot2]\nimage: \"image.jpg\"\ntoc: true\ntoc-title: \"Contents\"\ntoc-location: left\n---\n\n\n::: tabset\n\n# Texto\n\n# Code\n\n:::\n\n\n\n# Description\n\nHere we analyse data from superior educational institutions of Brazil. \n\n\n\n",
     "supporting": [],
     "filters": [
       "rmarkdown/pagebreak.lua"

@@ -32,3 +32,6 @@ format:
     code-link: true
     code-fold: show
     highlight-style: github
+comments:
+  giscus:
+    repo: fredvasconcelos/portfolio

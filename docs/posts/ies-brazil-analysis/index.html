@@ -19,6 +19,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 <script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -106,7 +140,7 @@ ul.task-list li input[type="checkbox"] {
       </div> <!-- /container-fluid -->
     </nav></header><!-- content --><header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full"><div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">IES Analysis Brazil</h1>
+      <div class="quarto-title-block"><div><h1 class="title">IES Analysis Brazil</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
                                 <div class="quarto-categories">
                 <div class="quarto-category">education</div>
                 <div class="quarto-category">analysis</div>
@@ -139,26 +173,2939 @@ ul.task-list li input[type="checkbox"] {
   
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Contents</h2>
-   
-  <ul>
-<li><a href="#description" id="toc-description" class="nav-link active" data-scroll-target="#description">Description</a></li>
-  </ul></nav>
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
 </nav><div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
     </div>
 <!-- main -->
-<main class="content quarto-banner-title-block" id="quarto-document-content"><div class="tabset">
-<section id="texto" class="level1"><h1>Texto</h1>
-</section><section id="code" class="level1"><h1>Code</h1>
+<main class="content quarto-banner-title-block" id="quarto-document-content"><div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist">
+<li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">Article</a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Code</a></li>
+</ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<section id="description" class="level2"><h2 class="anchored" data-anchor-id="description">Description</h2>
+<p>Nosso objetivo é ler os dados do governo e entender padrões ao longo dos anos</p>
 </section>
 </div>
-<section id="description" class="level1"><h1>Description</h1>
-<p>Here we analyse data from superior educational institutions of Brazil.</p>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<section id="load-libraries" class="level2"><h2 class="anchored" data-anchor-id="load-libraries">1. Load libraries</h2>
+<div class="cell">
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://rpkgs.datanovia.com/rstatix/">rstatix</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.sthda.com/english/rpkgs/factoextra">factoextra</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/slowkow/ggrepel">ggrepel</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://svn.r-project.org/R-packages/trunk/cluster/">cluster</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jrnold/ggthemes">ggthemes</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section><section id="load-data" class="level2"><h2 class="anchored" data-anchor-id="load-data">2. Load data</h2>
+<p>We create a list of data frames for faster de creation of the data.</p>
+<div class="cell">
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">listed_df</span> <span class="op">&lt;-</span> <span class="va">file_paths</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="kw">function</span> <span class="op">(</span><span class="va">path</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span><span class="op">(</span><span class="va">path</span>, sep <span class="op">=</span> <span class="st">';'</span>, encoding <span class="op">=</span> <span class="st">'latin1'</span><span class="op">)</span></span>
+<span>  <span class="op">}</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span><span class="op">)</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section><section id="feature-enginering" class="level2"><h2 class="anchored" data-anchor-id="feature-enginering">3. Feature enginering</h2>
+<p>The data frames don’t have information about Regions and States of Brazil because. We get this information with the <em>IES CODE</em> in the <strong>IES DATABASE</strong>.</p>
+</section><section id="view-data-frame-structure" class="level2"><h2 class="anchored" data-anchor-id="view-data-frame-structure">4. View data frame structure</h2>
+<div class="cell">
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">listed_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/unnest.html">unnest</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="st">'.'</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 201
+  NU_ANO_CENSO NO_REGIAO CO_REGIAO NO_UF   SG_UF CO_UF NO_MUNICIPIO CO_MUNICIPIO
+         &lt;int&gt; &lt;chr&gt;         &lt;int&gt; &lt;chr&gt;   &lt;chr&gt; &lt;int&gt; &lt;chr&gt;               &lt;int&gt;
+1         2009 Norte             1 Rondôn… RO       11 Ariquemes         1100023
+2         2009 Norte             1 Rondôn… RO       11 Ariquemes         1100023
+3         2009 Norte             1 Rondôn… RO       11 Ariquemes         1100023
+4         2009 Norte             1 Rondôn… RO       11 Ariquemes         1100023
+5         2009 Norte             1 Rondôn… RO       11 Ariquemes         1100023
+6         2009 Norte             1 Rondôn… RO       11 Ariquemes         1100023
+# ℹ 193 more variables: IN_CAPITAL &lt;int&gt;, TP_DIMENSAO &lt;int&gt;,
+#   TP_ORGANIZACAO_ACADEMICA &lt;int&gt;, TP_CATEGORIA_ADMINISTRATIVA &lt;int&gt;,
+#   TP_REDE &lt;int&gt;, CO_IES &lt;int&gt;, NO_CURSO &lt;chr&gt;, CO_CURSO &lt;int&gt;,
+#   NO_CINE_ROTULO &lt;chr&gt;, CO_CINE_ROTULO &lt;chr&gt;, CO_CINE_AREA_GERAL &lt;int&gt;,
+#   NO_CINE_AREA_GERAL &lt;chr&gt;, CO_CINE_AREA_ESPECIFICA &lt;int&gt;,
+#   NO_CINE_AREA_ESPECIFICA &lt;chr&gt;, CO_CINE_AREA_DETALHADA &lt;int&gt;,
+#   NO_CINE_AREA_DETALHADA &lt;chr&gt;, TP_GRAU_ACADEMICO &lt;int&gt;, IN_GRATUITO &lt;int&gt;, …</code></pre>
+</div>
+</div>
+</section><section id="describe-variables" class="level2"><h2 class="anchored" data-anchor-id="describe-variables">5. Describe variables</h2>
+<div class="cell">
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">listed_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/unnest.html">unnest</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="st">'.'</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">skimr</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/skimr/reference/skim.html">skim</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<caption>Data summary</caption>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Name</td>
+<td style="text-align: left;">Piped data</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Number of rows</td>
+<td style="text-align: left;">1886955</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Number of columns</td>
+<td style="text-align: left;">201</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">_______________________</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Column type frequency:</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">character</td>
+<td style="text-align: left;">11</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">numeric</td>
+<td style="text-align: left;">190</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">________________________</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Group variables</td>
+<td style="text-align: left;">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: character</strong></p>
+<table class="table table-sm table-striped small">
+<colgroup>
+<col style="width: 29%">
+<col style="width: 12%">
+<col style="width: 17%">
+<col style="width: 4%">
+<col style="width: 4%">
+<col style="width: 7%">
+<col style="width: 10%">
+<col style="width: 13%">
+</colgroup>
+<thead><tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: right;">min</th>
+<th style="text-align: right;">max</th>
+<th style="text-align: right;">empty</th>
+<th style="text-align: right;">n_unique</th>
+<th style="text-align: right;">whitespace</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">NO_REGIAO</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">34256</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NO_UF</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">34256</td>
+<td style="text-align: right;">28</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">SG_UF</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">34256</td>
+<td style="text-align: right;">28</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NO_MUNICIPIO</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">29</td>
+<td style="text-align: right;">34256</td>
+<td style="text-align: right;">3198</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">NO_CURSO</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">200</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">9370</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NO_CINE_ROTULO</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">366</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">CO_CINE_ROTULO</td>
+<td style="text-align: right;">344691</td>
+<td style="text-align: right;">0.82</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">366</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NO_CINE_AREA_GERAL</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">58</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">NO_CINE_AREA_ESPECIFICA</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">37</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NO_CINE_AREA_DETALHADA</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">89</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">CO_CINE_ROTULO2</td>
+<td style="text-align: right;">1542264</td>
+<td style="text-align: right;">0.18</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">350</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table class="table table-sm table-striped small">
+<colgroup>
+<col style="width: 23%">
+<col style="width: 8%">
+<col style="width: 11%">
+<col style="width: 9%">
+<col style="width: 8%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 7%">
+<col style="width: 4%">
+</colgroup>
+<thead><tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">sd</th>
+<th style="text-align: right;">p0</th>
+<th style="text-align: right;">p25</th>
+<th style="text-align: right;">p50</th>
+<th style="text-align: right;">p75</th>
+<th style="text-align: right;">p100</th>
+<th style="text-align: left;">hist</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">NU_ANO_CENSO</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">2017.69</td>
+<td style="text-align: right;">3.44</td>
+<td style="text-align: right;">2009</td>
+<td style="text-align: right;">2016</td>
+<td style="text-align: right;">2019</td>
+<td style="text-align: right;">2020</td>
+<td style="text-align: right;">2021</td>
+<td style="text-align: left;">▁▁▂▂▇</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CO_REGIAO</td>
+<td style="text-align: right;">34256</td>
+<td style="text-align: right;">0.98</td>
+<td style="text-align: right;">3.06</td>
+<td style="text-align: right;">1.05</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: left;">▂▃▇▅▂</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">CO_UF</td>
+<td style="text-align: right;">34256</td>
+<td style="text-align: right;">0.98</td>
+<td style="text-align: right;">34.03</td>
+<td style="text-align: right;">9.55</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">29</td>
+<td style="text-align: right;">35</td>
+<td style="text-align: right;">41</td>
+<td style="text-align: right;">53</td>
+<td style="text-align: left;">▂▂▇▃▂</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CO_MUNICIPIO</td>
+<td style="text-align: right;">34256</td>
+<td style="text-align: right;">0.98</td>
+<td style="text-align: right;">3419623.40</td>
+<td style="text-align: right;">955648.59</td>
+<td style="text-align: right;">1100015</td>
+<td style="text-align: right;">2927408</td>
+<td style="text-align: right;">3509502</td>
+<td style="text-align: right;">4119905</td>
+<td style="text-align: right;">5300108</td>
+<td style="text-align: left;">▂▂▇▃▂</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">IN_CAPITAL</td>
+<td style="text-align: right;">34256</td>
+<td style="text-align: right;">0.98</td>
+<td style="text-align: right;">0.17</td>
+<td style="text-align: right;">0.38</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">▇▁▁▁▂</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">TP_DIMENSAO</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">1.79</td>
+<td style="text-align: right;">0.45</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">▂▇▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">TP_ORGANIZACAO_ACADEMICA</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">1.60</td>
+<td style="text-align: right;">0.73</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: left;">▇▅▂▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">TP_CATEGORIA_ADMINISTRATIVA</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">4.04</td>
+<td style="text-align: right;">1.03</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: left;">▁▇▂▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">TP_REDE</td>
+<td style="text-align: right;">64865</td>
+<td style="text-align: right;">0.97</td>
+<td style="text-align: right;">1.90</td>
+<td style="text-align: right;">0.30</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">▁▁▁▁▇</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CO_IES</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">1362.33</td>
+<td style="text-align: right;">2451.04</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">322</td>
+<td style="text-align: right;">671</td>
+<td style="text-align: right;">1491</td>
+<td style="text-align: right;">25613</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">CO_CURSO</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">896052.29</td>
+<td style="text-align: right;">709979.97</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">100630</td>
+<td style="text-align: right;">1190156</td>
+<td style="text-align: right;">1382707</td>
+<td style="text-align: right;">50017018</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CO_CINE_AREA_GERAL</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">4.24</td>
+<td style="text-align: right;">2.77</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: left;">▆▇▂▂▃</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">CO_CINE_AREA_ESPECIFICA</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">43.59</td>
+<td style="text-align: right;">27.85</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">41</td>
+<td style="text-align: right;">61</td>
+<td style="text-align: right;">108</td>
+<td style="text-align: left;">▆▇▂▂▃</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CO_CINE_AREA_DETALHADA</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">439.15</td>
+<td style="text-align: right;">278.37</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">115</td>
+<td style="text-align: right;">413</td>
+<td style="text-align: right;">615</td>
+<td style="text-align: right;">1088</td>
+<td style="text-align: left;">▆▇▂▂▃</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">TP_GRAU_ACADEMICO</td>
+<td style="text-align: right;">4349</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">2.07</td>
+<td style="text-align: right;">0.86</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">▇▅▁▇▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">IN_GRATUITO</td>
+<td style="text-align: right;">52146</td>
+<td style="text-align: right;">0.97</td>
+<td style="text-align: right;">0.09</td>
+<td style="text-align: right;">0.28</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">TP_MODALIDADE_ENSINO</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">1.78</td>
+<td style="text-align: right;">0.42</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">▂▁▁▁▇</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">TP_NIVEL_ACADEMICO</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">0.03</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_CURSO</td>
+<td style="text-align: right;">726856</td>
+<td style="text-align: right;">0.61</td>
+<td style="text-align: right;">0.39</td>
+<td style="text-align: right;">0.49</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">▇▁▁▁▅</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_VG_TOTAL</td>
+<td style="text-align: right;">726856</td>
+<td style="text-align: right;">0.61</td>
+<td style="text-align: right;">116.34</td>
+<td style="text-align: right;">1257.30</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">76</td>
+<td style="text-align: right;">149108</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_VG_TOTAL_DIURNO</td>
+<td style="text-align: right;">746430</td>
+<td style="text-align: right;">0.60</td>
+<td style="text-align: right;">20.19</td>
+<td style="text-align: right;">75.10</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">20134</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_VG_TOTAL_NOTURNO</td>
+<td style="text-align: right;">746430</td>
+<td style="text-align: right;">0.60</td>
+<td style="text-align: right;">36.45</td>
+<td style="text-align: right;">101.28</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">35</td>
+<td style="text-align: right;">20142</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_VG_TOTAL_EAD</td>
+<td style="text-align: right;">726856</td>
+<td style="text-align: right;">0.61</td>
+<td style="text-align: right;">60.66</td>
+<td style="text-align: right;">1250.52</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">149108</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_VG_NOVA</td>
+<td style="text-align: right;">726856</td>
+<td style="text-align: right;">0.61</td>
+<td style="text-align: right;">69.96</td>
+<td style="text-align: right;">1069.28</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">74600</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_VG_PROC_SELETIVO</td>
+<td style="text-align: right;">726856</td>
+<td style="text-align: right;">0.61</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">▁▁▇▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_VG_REMANESC</td>
+<td style="text-align: right;">726856</td>
+<td style="text-align: right;">0.61</td>
+<td style="text-align: right;">24.90</td>
+<td style="text-align: right;">362.78</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">74587</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_VG_PROG_ESPECIAL</td>
+<td style="text-align: right;">726856</td>
+<td style="text-align: right;">0.61</td>
+<td style="text-align: right;">0.31</td>
+<td style="text-align: right;">42.04</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">29840</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_INSCRITO_TOTAL</td>
+<td style="text-align: right;">726856</td>
+<td style="text-align: right;">0.61</td>
+<td style="text-align: right;">164.07</td>
+<td style="text-align: right;">1357.11</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">70</td>
+<td style="text-align: right;">398817</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_INSCRITO_TOTAL_DIURNO</td>
+<td style="text-align: right;">746430</td>
+<td style="text-align: right;">0.60</td>
+<td style="text-align: right;">67.33</td>
+<td style="text-align: right;">456.00</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">112694</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_INSCRITO_TOTAL_NOTURNO</td>
+<td style="text-align: right;">746430</td>
+<td style="text-align: right;">0.60</td>
+<td style="text-align: right;">58.62</td>
+<td style="text-align: right;">266.04</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">59935</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_INSCRITO_TOTAL_EAD</td>
+<td style="text-align: right;">726856</td>
+<td style="text-align: right;">0.61</td>
+<td style="text-align: right;">34.27</td>
+<td style="text-align: right;">1227.58</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">398817</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_INSC_VG_NOVA</td>
+<td style="text-align: right;">726856</td>
+<td style="text-align: right;">0.61</td>
+<td style="text-align: right;">111.68</td>
+<td style="text-align: right;">1256.57</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">398254</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_INSC_PROC_SELETIVO</td>
+<td style="text-align: right;">726856</td>
+<td style="text-align: right;">0.61</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">▁▁▇▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_INSC_VG_REMANESC</td>
+<td style="text-align: right;">726856</td>
+<td style="text-align: right;">0.61</td>
+<td style="text-align: right;">8.82</td>
+<td style="text-align: right;">217.44</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">126798</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_INSC_VG_PROG_ESPECIAL</td>
+<td style="text-align: right;">726856</td>
+<td style="text-align: right;">0.61</td>
+<td style="text-align: right;">0.29</td>
+<td style="text-align: right;">15.20</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">5028</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_ING</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">20.98</td>
+<td style="text-align: right;">59.29</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">12082</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_ING_FEM</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">11.81</td>
+<td style="text-align: right;">38.69</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">11116</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_ING_MASC</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">9.17</td>
+<td style="text-align: right;">27.34</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">3333</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_ING_DIURNO</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">4.84</td>
+<td style="text-align: right;">24.08</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1821</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_ING_NOTURNO</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">8.25</td>
+<td style="text-align: right;">32.73</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">5041</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_ING_VG_NOVA</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">12.73</td>
+<td style="text-align: right;">41.13</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">5041</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_ING_VESTIBULAR</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">14.70</td>
+<td style="text-align: right;">44.22</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">5037</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_ING_ENEM</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">3.84</td>
+<td style="text-align: right;">18.56</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1714</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_ING_AVALIACAO_SERIADA</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.06</td>
+<td style="text-align: right;">1.39</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">301</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_ING_SELECAO_SIMPLIFICA</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.98</td>
+<td style="text-align: right;">10.85</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2292</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_ING_EGR</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.01</td>
+<td style="text-align: right;">0.74</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">202</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_ING_OUTRO_TIPO_SELECAO</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">▁▁▇▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_ING_PROC_SELETIVO</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">▁▁▇▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_ING_VG_REMANESC</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">1.67</td>
+<td style="text-align: right;">11.91</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2366</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_ING_VG_PROG_ESPECIAL</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.05</td>
+<td style="text-align: right;">1.86</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">601</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_ING_OUTRA_FORMA</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.75</td>
+<td style="text-align: right;">14.12</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">12023</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_ING_0_17</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.18</td>
+<td style="text-align: right;">1.11</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">167</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_ING_18_24</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">10.90</td>
+<td style="text-align: right;">33.36</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">2579</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_ING_25_29</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">3.57</td>
+<td style="text-align: right;">11.06</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">1865</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_ING_30_34</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">2.50</td>
+<td style="text-align: right;">8.34</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2411</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_ING_35_39</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">1.72</td>
+<td style="text-align: right;">6.28</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2281</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_ING_40_49</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">1.62</td>
+<td style="text-align: right;">6.78</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3101</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_ING_50_59</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.43</td>
+<td style="text-align: right;">2.13</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">993</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_ING_60_MAIS</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.06</td>
+<td style="text-align: right;">0.41</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">131</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_ING_BRANCA</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">6.76</td>
+<td style="text-align: right;">22.95</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">2537</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_ING_PRETA</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">1.06</td>
+<td style="text-align: right;">4.63</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">638</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_ING_PARDA</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">4.44</td>
+<td style="text-align: right;">18.31</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2121</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_ING_AMARELA</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.26</td>
+<td style="text-align: right;">1.66</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">358</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_ING_INDIGENA</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.08</td>
+<td style="text-align: right;">1.21</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">313</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_ING_CORND</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">8.39</td>
+<td style="text-align: right;">36.16</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">11944</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_MAT</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">53.81</td>
+<td style="text-align: right;">159.59</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">35</td>
+<td style="text-align: right;">16351</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_MAT_FEM</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">30.85</td>
+<td style="text-align: right;">100.77</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">14801</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_MAT_MASC</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">22.96</td>
+<td style="text-align: right;">74.28</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">5946</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_MAT_DIURNO</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">15.42</td>
+<td style="text-align: right;">78.93</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">5657</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_MAT_NOTURNO</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">23.66</td>
+<td style="text-align: right;">92.09</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">6105</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_MAT_0_17</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.17</td>
+<td style="text-align: right;">1.06</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">173</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_MAT_18_24</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">26.97</td>
+<td style="text-align: right;">92.11</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">6068</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_MAT_25_29</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">10.69</td>
+<td style="text-align: right;">32.17</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">2391</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_MAT_30_34</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">6.39</td>
+<td style="text-align: right;">20.17</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">2815</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_MAT_35_39</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">4.23</td>
+<td style="text-align: right;">14.83</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">3006</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_MAT_40_49</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">4.05</td>
+<td style="text-align: right;">16.96</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">4803</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_MAT_50_59</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">1.14</td>
+<td style="text-align: right;">5.82</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2101</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_MAT_60_MAIS</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.18</td>
+<td style="text-align: right;">1.08</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">323</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_MAT_BRANCA</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">18.09</td>
+<td style="text-align: right;">69.89</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">6620</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_MAT_PRETA</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">2.73</td>
+<td style="text-align: right;">12.57</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1067</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_MAT_PARDA</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">11.20</td>
+<td style="text-align: right;">46.99</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">4319</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_MAT_AMARELA</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.72</td>
+<td style="text-align: right;">5.05</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1253</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_MAT_INDIGENA</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.22</td>
+<td style="text-align: right;">3.28</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1309</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_MAT_CORND</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">20.85</td>
+<td style="text-align: right;">92.49</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">16285</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_CONC</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">7.87</td>
+<td style="text-align: right;">29.54</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">6441</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_CONC_FEM</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">4.79</td>
+<td style="text-align: right;">20.81</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">5998</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_CONC_MASC</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">3.08</td>
+<td style="text-align: right;">12.03</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2932</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_CONC_DIURNO</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">2.02</td>
+<td style="text-align: right;">12.21</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1375</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_CONC_NOTURNO</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">3.72</td>
+<td style="text-align: right;">16.30</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1459</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_CONC_0_17</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.01</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_CONC_18_24</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">2.85</td>
+<td style="text-align: right;">11.58</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1188</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_CONC_25_29</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">2.10</td>
+<td style="text-align: right;">7.87</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1136</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_CONC_30_34</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">1.13</td>
+<td style="text-align: right;">4.89</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1319</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_CONC_35_39</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.76</td>
+<td style="text-align: right;">3.99</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1304</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_CONC_40_49</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.77</td>
+<td style="text-align: right;">5.43</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2585</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_CONC_50_59</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.23</td>
+<td style="text-align: right;">2.08</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1343</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_CONC_60_MAIS</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.04</td>
+<td style="text-align: right;">0.36</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">147</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_CONC_BRANCA</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">2.70</td>
+<td style="text-align: right;">12.18</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1467</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_CONC_PRETA</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.34</td>
+<td style="text-align: right;">2.05</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">311</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_CONC_PARDA</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">1.47</td>
+<td style="text-align: right;">7.81</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">939</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_CONC_AMARELA</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.11</td>
+<td style="text-align: right;">1.03</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">294</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_CONC_INDIGENA</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.03</td>
+<td style="text-align: right;">0.70</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">356</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_CONC_CORND</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">3.22</td>
+<td style="text-align: right;">20.42</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">6404</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_ING_NACBRAS</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">20.95</td>
+<td style="text-align: right;">59.20</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">12071</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_ING_NACESTRANG</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.04</td>
+<td style="text-align: right;">0.55</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">406</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_MAT_NACBRAS</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">53.70</td>
+<td style="text-align: right;">159.32</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">35</td>
+<td style="text-align: right;">16351</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_MAT_NACESTRANG</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.11</td>
+<td style="text-align: right;">1.37</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">526</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_CONC_NACBRAS</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">7.86</td>
+<td style="text-align: right;">29.50</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">6441</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_CONC_NACESTRANG</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.40</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">262</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_ALUNO_DEFICIENTE</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.34</td>
+<td style="text-align: right;">2.23</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">672</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_ING_DEFICIENTE</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.09</td>
+<td style="text-align: right;">0.76</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">372</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_MAT_DEFICIENTE</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.25</td>
+<td style="text-align: right;">1.85</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">617</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_CONC_DEFICIENTE</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.03</td>
+<td style="text-align: right;">0.34</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">84</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_ING_FINANC</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">6.50</td>
+<td style="text-align: right;">29.91</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">3403</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_ING_FINANC_REEMB</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">1.43</td>
+<td style="text-align: right;">11.05</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1675</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_ING_FIES</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">1.10</td>
+<td style="text-align: right;">9.94</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1675</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_ING_RPFIES</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.25</td>
+<td style="text-align: right;">4.09</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">654</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_ING_FINANC_REEMB_OUTROS</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.09</td>
+<td style="text-align: right;">1.93</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">638</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_ING_FINANC_NREEMB</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">5.47</td>
+<td style="text-align: right;">27.29</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">3398</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_ING_PROUNII</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.76</td>
+<td style="text-align: right;">3.78</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">623</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_ING_PROUNIP</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.25</td>
+<td style="text-align: right;">2.77</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">613</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_ING_NRPFIES</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">4.15</td>
+<td style="text-align: right;">25.11</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3372</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_ING_FINANC_NREEMB_OUTROS</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.43</td>
+<td style="text-align: right;">4.94</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">899</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_MAT_FINANC</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">16.14</td>
+<td style="text-align: right;">73.11</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">8369</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_MAT_FINANC_REEMB</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">5.41</td>
+<td style="text-align: right;">36.24</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3801</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_MAT_FIES</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">4.68</td>
+<td style="text-align: right;">33.92</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3797</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_MAT_RPFIES</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.50</td>
+<td style="text-align: right;">7.97</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2806</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_MAT_FINANC_REEMB_OUTROS</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.32</td>
+<td style="text-align: right;">5.68</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2775</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_MAT_FINANC_NREEMB</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">11.90</td>
+<td style="text-align: right;">58.13</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">8365</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_MAT_PROUNII</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">2.51</td>
+<td style="text-align: right;">11.74</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1111</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_MAT_PROUNIP</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.82</td>
+<td style="text-align: right;">8.26</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1401</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_MAT_NRPFIES</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">7.76</td>
+<td style="text-align: right;">49.19</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">7950</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_MAT_FINANC_NREEMB_OUTROS</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">1.16</td>
+<td style="text-align: right;">12.77</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4098</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_CONC_FINANC</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">2.16</td>
+<td style="text-align: right;">11.27</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1377</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_CONC_FINANC_REEMB</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.72</td>
+<td style="text-align: right;">5.62</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">700</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_CONC_FIES</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.64</td>
+<td style="text-align: right;">5.27</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">693</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_CONC_RPFIES</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.05</td>
+<td style="text-align: right;">1.35</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">683</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_CONC_FINANC_REEMB_OUTROS</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.05</td>
+<td style="text-align: right;">1.27</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">469</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_CONC_FINANC_NREEMB</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">1.59</td>
+<td style="text-align: right;">9.09</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1376</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_CONC_PROUNII</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.38</td>
+<td style="text-align: right;">2.21</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">375</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_CONC_PROUNIP</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.13</td>
+<td style="text-align: right;">1.48</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">231</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_CONC_NRPFIES</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.97</td>
+<td style="text-align: right;">7.47</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1303</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_CONC_FINANC_NREEMB_OUTROS</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.17</td>
+<td style="text-align: right;">2.27</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">684</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_ING_RESERVA_VAGA</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.82</td>
+<td style="text-align: right;">6.12</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">770</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_ING_RVREDEPUBLICA</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.68</td>
+<td style="text-align: right;">5.42</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">666</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_ING_RVETNICO</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.36</td>
+<td style="text-align: right;">3.02</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">330</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_ING_RVPDEF</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.01</td>
+<td style="text-align: right;">0.18</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">34</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_ING_RVSOCIAL_RF</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.26</td>
+<td style="text-align: right;">2.44</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">308</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_ING_RVOUTROS</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.03</td>
+<td style="text-align: right;">1.58</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">770</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_MAT_RESERVA_VAGA</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">2.45</td>
+<td style="text-align: right;">19.00</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3140</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_MAT_RVREDEPUBLICA</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">1.98</td>
+<td style="text-align: right;">16.88</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3021</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_MAT_RVETNICO</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">1.06</td>
+<td style="text-align: right;">9.45</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1069</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_MAT_RVPDEF</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.46</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">123</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_MAT_RVSOCIAL_RF</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.74</td>
+<td style="text-align: right;">7.64</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1531</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_MAT_RVOUTROS</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.09</td>
+<td style="text-align: right;">2.80</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">948</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_CONC_RESERVA_VAGA</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.19</td>
+<td style="text-align: right;">2.13</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">441</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_CONC_RVREDEPUBLICA</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.15</td>
+<td style="text-align: right;">1.76</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">302</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_CONC_RVETNICO</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.07</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">249</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_CONC_RVPDEF</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.06</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">36</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_CONC_RVSOCIAL_RF</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.05</td>
+<td style="text-align: right;">0.74</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">124</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_CONC_RVOUTROS</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.01</td>
+<td style="text-align: right;">0.62</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">323</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_SIT_TRANCADA</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">8.04</td>
+<td style="text-align: right;">36.34</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">3675</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_SIT_DESVINCULADO</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">11.90</td>
+<td style="text-align: right;">40.38</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">12110</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_SIT_TRANSFERIDO</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.66</td>
+<td style="text-align: right;">8.49</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4005</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_SIT_FALECIDO</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.01</td>
+<td style="text-align: right;">0.13</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">29</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_ING_PROCESCPUBLICA</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">12.79</td>
+<td style="text-align: right;">38.92</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">3486</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_ING_PROCESCPRIVADA</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">4.72</td>
+<td style="text-align: right;">23.08</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">4304</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_ING_PROCNAOINFORMADA</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">2.35</td>
+<td style="text-align: right;">24.71</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">12082</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_MAT_PROCESCPUBLICA</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">28.81</td>
+<td style="text-align: right;">88.93</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">6833</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_MAT_PROCESCPRIVADA</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">13.04</td>
+<td style="text-align: right;">67.51</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">7457</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_MAT_PROCNAOINFORMADA</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">8.75</td>
+<td style="text-align: right;">68.23</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">16351</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_CONC_PROCESCPUBLICA</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">3.98</td>
+<td style="text-align: right;">15.58</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2807</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_CONC_PROCESCPRIVADA</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">1.78</td>
+<td style="text-align: right;">10.89</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1351</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_CONC_PROCNAOINFORMADA</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">1.59</td>
+<td style="text-align: right;">17.03</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">6435</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_PARFOR</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.36</td>
+<td style="text-align: right;">13.31</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">5059</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_ING_PARFOR</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.07</td>
+<td style="text-align: right;">3.45</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1139</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_MAT_PARFOR</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.28</td>
+<td style="text-align: right;">10.60</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4416</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_CONC_PARFOR</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.05</td>
+<td style="text-align: right;">4.25</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3868</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_APOIO_SOCIAL</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">6.78</td>
+<td style="text-align: right;">45.17</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">6212</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_ING_APOIO_SOCIAL</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">1.95</td>
+<td style="text-align: right;">13.38</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1879</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_MAT_APOIO_SOCIAL</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">5.38</td>
+<td style="text-align: right;">35.38</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3514</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_CONC_APOIO_SOCIAL</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.74</td>
+<td style="text-align: right;">5.59</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">571</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_ATIV_EXTRACURRICULAR</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">9.33</td>
+<td style="text-align: right;">66.72</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">8457</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_ING_ATIV_EXTRACURRICULAR</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">2.09</td>
+<td style="text-align: right;">18.43</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3907</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_MAT_ATIV_EXTRACURRICULAR</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">8.10</td>
+<td style="text-align: right;">56.11</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">6970</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_CONC_ATIV_EXTRACURRICULAR</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">1.39</td>
+<td style="text-align: right;">10.60</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1627</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_MOB_ACADEMICA</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.07</td>
+<td style="text-align: right;">1.88</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">581</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_ING_MOB_ACADEMICA</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.26</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">130</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">QT_MAT_MOB_ACADEMICA</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.06</td>
+<td style="text-align: right;">1.68</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">523</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">QT_CONC_MOB_ACADEMICA</td>
+<td style="text-align: right;">19574</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.22</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">107</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section><section id="create-new-data-frames" class="level2"><h2 class="anchored" data-anchor-id="create-new-data-frames">6. Create new data frames</h2>
+<section id="students-profile" class="level3"><h3 class="anchored" data-anchor-id="students-profile">6.1. Students profile</h3>
+<div class="cell">
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">students</span> <span class="op">&lt;-</span> <span class="va">listed_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/unnest.html">unnest</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="st">'.'</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="co"># unlist and merge data.frames</span></span>
+<span>  <span class="fu">janitor</span><span class="fu">::</span><span class="fu"><a href="https://sfirke.github.io/janitor/reference/clean_names.html">clean_names</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">co_ies</span>, <span class="va">nu_ano_censo</span>, <span class="va">no_regiao</span>, <span class="va">no_uf</span>, <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">'qt_in'</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">right_join</a></span><span class="op">(</span><span class="va">regions_states</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'co_ies'</span>, <span class="st">'no_regiao'</span>, <span class="st">'no_uf'</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">nu_ano_censo</span>, <span class="va">no_regiao</span>, <span class="va">no_uf</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise_all.html">summarise_all</a></span><span class="op">(</span><span class="va">sum</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section><section id="statistics-tests" class="level3"><h3 class="anchored" data-anchor-id="statistics-tests">6.2. Statistics tests</h3>
+<div class="cell">
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">stats_df</span> <span class="op">&lt;-</span> <span class="va">students</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu">zoo</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/zoo/man/yearmon.html">as.yearmon</a></span><span class="op">(</span><span class="va">nu_ano_censo</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">no_regiao</span>, <span class="va">no_uf</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise_all.html">summarise_if</a></span><span class="op">(</span><span class="va">is.numeric</span>, <span class="va">sum</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">no_regiao</span>, <span class="va">no_uf</span>, <span class="va">qt_ing_fem</span><span class="op">:</span><span class="va">qt_ing_noturno</span>, <span class="va">qt_ing_0_17</span><span class="op">:</span><span class="va">qt_ing_cornd</span>,</span>
+<span>         <span class="va">qt_ing_financ</span><span class="op">:</span><span class="va">qt_ing_apoio_social</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/gather.html">gather</a></span><span class="op">(</span><span class="st">'var'</span>, <span class="st">'value'</span>, <span class="fl">4</span><span class="op">:</span><span class="fl">42</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">no_regiao</span>, <span class="va">no_uf</span>, <span class="va">var</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise_all.html">summarise_if</a></span><span class="op">(</span><span class="va">is.numeric</span>, <span class="va">sum</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section><section id="names-for-linear-model-table" class="level3"><h3 class="anchored" data-anchor-id="names-for-linear-model-table">6.3. Names for linear model table</h3>
+<div class="cell">
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">labels_table_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>`(Intercept)` <span class="op">=</span> <span class="st">'Intercept'</span>,</span>
+<span>                        `as.factor(var)qt_ing_fem` <span class="op">=</span> <span class="st">'Sex (Female)'</span>,</span>
+<span>                        `as.factor(var)qt_ing_masc` <span class="op">=</span> <span class="st">'Sex (Male)'</span>,</span>
+<span>                        `as.factor(var)qt_ing_amarela` <span class="op">=</span> <span class="st">'Ethnic (Asian)'</span>,</span>
+<span>                        `as.factor(var)qt_ing_branca` <span class="op">=</span> <span class="st">'Ethnic (White)'</span>,</span>
+<span>                        `as.factor(var)qt_ing_parda` <span class="op">=</span> <span class="st">'Ethnic (Brown)'</span>,</span>
+<span>                        `as.factor(var)qt_ing_preta` <span class="op">=</span> <span class="st">'Ethnic (Black)'</span>,</span>
+<span>                        `as.factor(var)qt_ing_indigena` <span class="op">=</span> <span class="st">'Ethnic (Indigenous)'</span>,</span>
+<span>                        `as.factor(var)qt_ing_cornd` <span class="op">=</span> <span class="st">'Ethnic (Not declared)'</span>,</span>
+<span>                        `as.factor(var)qt_ing_0_17` <span class="op">=</span> <span class="st">'Age (&lt;18)'</span>,</span>
+<span>                        `as.factor(var)qt_ing_18_24` <span class="op">=</span> <span class="st">'Age (18~24)'</span>, </span>
+<span>                        `as.factor(var)qt_ing_25_29` <span class="op">=</span> <span class="st">'Age (25~29)'</span>, </span>
+<span>                        `as.factor(var)qt_ing_30_34` <span class="op">=</span> <span class="st">'Age (30~34)'</span>, </span>
+<span>                        `as.factor(var)qt_ing_35_39` <span class="op">=</span> <span class="st">'Age (35~39)'</span>, </span>
+<span>                        `as.factor(var)qt_ing_40_49` <span class="op">=</span> <span class="st">'Age (40~49)'</span>, </span>
+<span>                        `as.factor(var)qt_ing_50_59` <span class="op">=</span> <span class="st">'Age (50~59)'</span>, </span>
+<span>                        `as.factor(var)qt_ing_60_mais` <span class="op">=</span> <span class="st">'Age (&gt;60)'</span>,</span>
+<span>                        `as.factor(var)qt_ing_diurno` <span class="op">=</span> <span class="st">'Shift (Diurnal)'</span>,</span>
+<span>                        `as.factor(var)qt_ing_noturno` <span class="op">=</span> <span class="st">'Shift (Nocturnal)'</span>,</span>
+<span>                        `as.factor(var)qt_ing_procescprivada` <span class="op">=</span> <span class="st">'Type high school (Private)'</span>,</span>
+<span>                        `as.factor(var)qt_ing_procescpublica` <span class="op">=</span> <span class="st">'Type high school (Public)'</span>,</span>
+<span>                        `as.factor(var)qt_ing_procnaoinformada` <span class="op">=</span> <span class="st">'Type high school (Not declared)'</span>,</span>
+<span>                        `as.factor(var)qt_ing_apoio_social` <span class="op">=</span> <span class="st">'Any Social Support'</span>,</span>
+<span>                        `as.factor(var)qt_ing_reserva_vaga` <span class="op">=</span> <span class="st">'Social Support (Quotas)'</span>,</span>
+<span>                        `as.factor(var)qt_ing_rvetnico` <span class="op">=</span> <span class="st">'Social Support (Ethnic quotas)'</span>,</span>
+<span>                        `as.factor(var)qt_ing_rvoutros` <span class="op">=</span>  <span class="st">'Social Support (Other quotas)'</span>,</span>
+<span>                        `as.factor(var)qt_ing_rvpdef` <span class="op">=</span>  <span class="st">'Social Support (Disabilities quotas)'</span>,</span>
+<span>                        `as.factor(var)qt_ing_rvredepublica` <span class="op">=</span>  <span class="st">'Social Support (Public high school quotas)'</span>,</span>
+<span>                        `as.factor(var)qt_ing_rvsocial_rf` <span class="op">=</span>  <span class="st">'Social Support (Family income quotas)'</span>,</span>
+<span>                        `as.factor(var)qt_ing_parfor` <span class="op">=</span> <span class="st">'Social Support (PARFOR)'</span>,</span>
+<span>                        `as.factor(var)qt_ing_financ` <span class="op">=</span> <span class="st">'Income Support'</span>,</span>
+<span>                        `as.factor(var)qt_ing_financ_nreemb` <span class="op">=</span> <span class="st">'Income Support (Non-refundable)'</span>, </span>
+<span>                        `as.factor(var)qt_ing_financ_nreemb_outros` <span class="op">=</span> <span class="st">'Income Support (Non-refundable others)'</span>,</span>
+<span>                        `as.factor(var)qt_ing_financ_reemb` <span class="op">=</span> <span class="st">'Income Support (Refundable)'</span>, </span>
+<span>                        `as.factor(var)qt_ing_financ_reemb_outros` <span class="op">=</span> <span class="st">'Income Support (Refundable others)'</span>,</span>
+<span>                        `as.factor(var)qt_ing_fies` <span class="op">=</span> <span class="st">'Income Support (FIES)'</span>,</span>
+<span>                        `as.factor(var)qt_ing_rpfies` <span class="op">=</span> <span class="st">'Income Support (Refundable FIES)'</span>,</span>
+<span>                        `as.factor(var)qt_ing_nrpfies` <span class="op">=</span> <span class="st">'Income Support (Non-refundable FIES)'</span>,</span>
+<span>                        `as.factor(var)qt_ing_prounii` <span class="op">=</span> <span class="st">'Income Support (PROUNI whole)'</span>,</span>
+<span>                        `as.factor(var)qt_ing_prounip` <span class="op">=</span> <span class="st">'Income Support (PROUNI parcial)'</span>,</span>
+<span>                        data <span class="op">=</span> <span class="st">'Date'</span>,</span>
+<span>                        `as.factor(no_regiao)Nordeste` <span class="op">=</span> <span class="st">'Region (Nordeste)'</span>,</span>
+<span>                        `as.factor(no_regiao)Norte` <span class="op">=</span> <span class="st">'Region (Norte)'</span>,</span>
+<span>                        `as.factor(no_regiao)Sudeste` <span class="op">=</span> <span class="st">'Region (Sudeste)'</span>,</span>
+<span>                        `as.factor(no_regiao)Sul` <span class="op">=</span> <span class="st">'Region (Sul)'</span>,</span>
+<span>                        `as.factor(no_uf)Alagoas` <span class="op">=</span> <span class="st">'State (Alagoas)'</span>,</span>
+<span>                        `as.factor(no_uf)Amapá` <span class="op">=</span> <span class="st">'State (Amapá)'</span>,</span>
+<span>                        `as.factor(no_uf)Amazonas` <span class="op">=</span> <span class="st">'State (Amazonas)'</span>,</span>
+<span>                        `as.factor(no_uf)Bahia` <span class="op">=</span> <span class="st">'State (Bahia)'</span>,</span>
+<span>                        `as.factor(no_uf)Ceará` <span class="op">=</span> <span class="st">'State (Ceará)'</span>,</span>
+<span>                        `as.factor(no_uf)Distrito Federal` <span class="op">=</span> <span class="st">'State (Distrito Federal)'</span>,</span>
+<span>                        `as.factor(no_uf)Espírito Santo` <span class="op">=</span> <span class="st">'State (Espirito Santo)'</span>,</span>
+<span>                        `as.factor(no_uf)Goiás` <span class="op">=</span> <span class="st">'State (Goiás)'</span>,</span>
+<span>                        `as.factor(no_uf)Maranhão` <span class="op">=</span> <span class="st">'State (Maranhão)'</span>,</span>
+<span>                        `as.factor(no_uf)Mato Grosso` <span class="op">=</span> <span class="st">'State (Mato Grosso)'</span>,</span>
+<span>                        `as.factor(no_uf)Minas Gerais` <span class="op">=</span> <span class="st">'State (Minas Gerais)'</span>,</span>
+<span>                        `as.factor(no_uf)Pará` <span class="op">=</span> <span class="st">'State (Pará)'</span>,</span>
+<span>                        `as.factor(no_uf)Paraíba` <span class="op">=</span> <span class="st">'State (Paraíba)'</span>,</span>
+<span>                        `as.factor(no_uf)Paraná` <span class="op">=</span> <span class="st">'State (Paraná)'</span>,</span>
+<span>                        `as.factor(no_uf)Pernambuco` <span class="op">=</span> <span class="st">'State (Alagoas)'</span>,</span>
+<span>                        `as.factor(no_uf)Piauí` <span class="op">=</span> <span class="st">'State (Pernambuco)'</span>,</span>
+<span>                        `as.factor(no_uf)Rio de Janeiro` <span class="op">=</span> <span class="st">'State (Rio de Janeiro)'</span>,</span>
+<span>                        `as.factor(no_uf)Rio Grande do Norte` <span class="op">=</span> <span class="st">'State (Rio Grande do Norte)'</span>,</span>
+<span>                        `as.factor(no_uf)Rio Grande do Sul` <span class="op">=</span> <span class="st">'State (Rio Grande do Sul)'</span>,</span>
+<span>                        `as.factor(no_uf)Rondônia` <span class="op">=</span> <span class="st">'State (Rondônia)'</span>,</span>
+<span>                        `as.factor(no_uf)Roraima` <span class="op">=</span> <span class="st">'State (Roraima)'</span>,</span>
+<span>                        `as.factor(no_uf)Tocantins` <span class="op">=</span> <span class="st">'State (Tocantins)'</span></span>
+<span>                        <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section><section id="cluster---region-and-sex" class="level3"><h3 class="anchored" data-anchor-id="cluster---region-and-sex">6.4. Cluster - Region and Sex</h3>
+<div class="cell">
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">cluster_regiao_sex</span> <span class="op">&lt;-</span> <span class="va">stats_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider</a></span><span class="op">(</span>names_from <span class="op">=</span> <span class="va">var</span>, values_from <span class="op">=</span> <span class="va">value</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">no_regiao</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise_all.html">summarise_if</a></span><span class="op">(</span><span class="va">is.numeric</span>, <span class="va">sum</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">no_regiao</span>, Male <span class="op">=</span> <span class="va">qt_ing_masc</span>, Female <span class="op">=</span> <span class="va">qt_ing_fem</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">names_cluster_regiao_sex</span> <span class="op">&lt;-</span> <span class="va">cluster_regiao_sex</span><span class="op">$</span><span class="va">no_regiao</span></span>
+<span></span>
+<span><span class="va">cluster_regiao_sex</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/scale.html">scale</a></span><span class="op">(</span><span class="va">cluster_regiao_sex</span><span class="op">[</span>,<span class="fl">2</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">cluster_regiao_sex</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">names_cluster_regiao_sex</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section><section id="cluster---states-and-sex" class="level3"><h3 class="anchored" data-anchor-id="cluster---states-and-sex">6.5. Cluster - States and Sex</h3>
+<div class="cell">
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">cluster_uf_sex</span> <span class="op">&lt;-</span> <span class="va">stats_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider</a></span><span class="op">(</span>names_from <span class="op">=</span> <span class="va">var</span>, values_from <span class="op">=</span> <span class="va">value</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">no_uf</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise_all.html">summarise_if</a></span><span class="op">(</span><span class="va">is.numeric</span>, <span class="va">sum</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">no_uf</span>, Male <span class="op">=</span> <span class="va">qt_ing_masc</span>, Female <span class="op">=</span> <span class="va">qt_ing_fem</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">names_cluster_uf_sex</span> <span class="op">&lt;-</span> <span class="va">cluster_uf_sex</span><span class="op">$</span><span class="va">no_uf</span></span>
+<span></span>
+<span><span class="va">cluster_uf_sex</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/scale.html">scale</a></span><span class="op">(</span><span class="va">cluster_uf_sex</span><span class="op">[</span>,<span class="fl">2</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">cluster_uf_sex</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">names_cluster_uf_sex</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section><section id="cluster---region-and-ethnic-group" class="level3"><h3 class="anchored" data-anchor-id="cluster---region-and-ethnic-group">6.6. Cluster - Region and Ethnic group</h3>
+<div class="cell">
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">cluster_regiao_ethnic</span> <span class="op">&lt;-</span> <span class="va">stats_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider</a></span><span class="op">(</span>names_from <span class="op">=</span> <span class="va">var</span>, values_from <span class="op">=</span> <span class="va">value</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">no_regiao</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise_all.html">summarise_if</a></span><span class="op">(</span><span class="va">is.numeric</span>, <span class="va">sum</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">no_regiao</span>, </span>
+<span>         White <span class="op">=</span> <span class="va">qt_ing_branca</span>, </span>
+<span>         Black <span class="op">=</span> <span class="va">qt_ing_preta</span>,</span>
+<span>         Brown <span class="op">=</span> <span class="va">qt_ing_parda</span>,</span>
+<span>         Asian <span class="op">=</span> <span class="va">qt_ing_amarela</span>,</span>
+<span>         Not_declared <span class="op">=</span> <span class="va">qt_ing_cornd</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">names_cluster_regiao_ethnic</span> <span class="op">&lt;-</span> <span class="va">cluster_regiao_ethnic</span><span class="op">$</span><span class="va">no_regiao</span></span>
+<span></span>
+<span><span class="va">cluster_regiao_ethnic</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/scale.html">scale</a></span><span class="op">(</span><span class="va">cluster_regiao_ethnic</span><span class="op">[</span>,<span class="fl">2</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">cluster_regiao_ethnic</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">names_cluster_regiao_ethnic</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section><section id="cluster---states-and-ethnic-group" class="level3"><h3 class="anchored" data-anchor-id="cluster---states-and-ethnic-group">6.7. Cluster - States and ethnic group</h3>
+<div class="cell">
+<details open=""><summary>Code</summary><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">cluster_uf_ethnic</span> <span class="op">&lt;-</span> <span class="va">stats_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider</a></span><span class="op">(</span>names_from <span class="op">=</span> <span class="va">var</span>, values_from <span class="op">=</span> <span class="va">value</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">no_uf</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise_all.html">summarise_if</a></span><span class="op">(</span><span class="va">is.numeric</span>, <span class="va">sum</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">no_uf</span>, </span>
+<span>         White <span class="op">=</span> <span class="va">qt_ing_branca</span>, </span>
+<span>         Black <span class="op">=</span> <span class="va">qt_ing_preta</span>,</span>
+<span>         Brown <span class="op">=</span> <span class="va">qt_ing_parda</span>,</span>
+<span>         Asian <span class="op">=</span> <span class="va">qt_ing_amarela</span>,</span>
+<span>         Not_declared <span class="op">=</span> <span class="va">qt_ing_cornd</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">names_cluster_uf_ethnic</span> <span class="op">&lt;-</span> <span class="va">cluster_uf_ethnic</span><span class="op">$</span><span class="va">no_uf</span></span>
+<span></span>
+<span><span class="va">cluster_uf_ethnic</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/scale.html">scale</a></span><span class="op">(</span><span class="va">cluster_uf_ethnic</span><span class="op">[</span>,<span class="fl">2</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">cluster_uf_ethnic</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">names_cluster_uf_ethnic</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section></section>
+</div>
+</div>
+</div>
 
 
-</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+<!-- -->
+
+
+</main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");
@@ -352,6 +3299,57 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
   function tippyHover(el, contentFn) {
     const config = {
       allowHTML: true,
@@ -506,7 +3504,277 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><script src="https://giscus.app/client.js" data-repo="fredvasconcelos/portfolio" data-repo-id="R_kgDOKByO_g" data-category="General" data-category-id="DIC_kwDOKByO_s4CYP-I" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
-</script>
+</script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb13" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "IES Analysis Brazil"</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Fred Vasconcelos"</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "2023-07-31"</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="an">categories:</span><span class="co"> [education, analysis, r, ggplot2]</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="an">image:</span><span class="co"> "image.jpg"</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="an">toc:</span><span class="co"> true</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="an">toc-title:</span><span class="co"> "Contents"</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="an">toc-location:</span><span class="co"> left</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="in">```{r setup, include=FALSE, message=FALSE}</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(<span class="at">echo =</span> <span class="cn">TRUE</span>, <span class="at">message =</span> <span class="cn">FALSE</span>, <span class="at">warning =</span> <span class="cn">FALSE</span>, <span class="at">fig.width =</span> <span class="dv">12</span>, <span class="at">fig.height =</span> <span class="dv">8</span>, <span class="at">out.width =</span> <span class="st">'50%'</span>)</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a><span class="fu"># Article</span></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a><span class="fu">## Description</span></span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>Nosso objetivo é ler os dados do governo e entender padrões ao longo dos anos</span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a><span class="fu"># Code</span></span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a><span class="fu">## 1. Load libraries</span></span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstatix)</span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(factoextra)</span>
+<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggrepel)</span>
+<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cluster)</span>
+<span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggthemes)</span>
+<span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb13-40"><a href="#cb13-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-41"><a href="#cb13-41" aria-hidden="true" tabindex="-1"></a><span class="fu">## 2. Load data</span></span>
+<span id="cb13-42"><a href="#cb13-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-43"><a href="#cb13-43" aria-hidden="true" tabindex="-1"></a>We create a list of data frames for faster de creation of the data.</span>
+<span id="cb13-44"><a href="#cb13-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-45"><a href="#cb13-45" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, echo=FALSE}</span></span>
+<span id="cb13-46"><a href="#cb13-46" aria-hidden="true" tabindex="-1"></a>file_paths <span class="ot">&lt;-</span> fs<span class="sc">::</span><span class="fu">dir_ls</span>(<span class="st">"/home/fredvasconcelos/Documentos/educacao/alunos/2009_2021/"</span>)</span>
+<span id="cb13-47"><a href="#cb13-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-48"><a href="#cb13-48" aria-hidden="true" tabindex="-1"></a><span class="co">#df_2021 &lt;- read.csv('/home/fredvasconcelos/Documentos/educacao/alunos/2009_2021/cursos_2021.CSV', sep = ';', encoding = 'latin1')</span></span>
+<span id="cb13-49"><a href="#cb13-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-50"><a href="#cb13-50" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb13-51"><a href="#cb13-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-54"><a href="#cb13-54" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb13-55"><a href="#cb13-55" aria-hidden="true" tabindex="-1"></a>listed_df <span class="ot">&lt;-</span> file_paths <span class="sc">%&gt;%</span></span>
+<span id="cb13-56"><a href="#cb13-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(<span class="cf">function</span> (path) {</span>
+<span id="cb13-57"><a href="#cb13-57" aria-hidden="true" tabindex="-1"></a>    <span class="fu">read.csv</span>(path, <span class="at">sep =</span> <span class="st">';'</span>, <span class="at">encoding =</span> <span class="st">'latin1'</span>)</span>
+<span id="cb13-58"><a href="#cb13-58" aria-hidden="true" tabindex="-1"></a>  }) <span class="sc">%&gt;%</span></span>
+<span id="cb13-59"><a href="#cb13-59" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>() </span>
+<span id="cb13-60"><a href="#cb13-60" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb13-61"><a href="#cb13-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-62"><a href="#cb13-62" aria-hidden="true" tabindex="-1"></a><span class="fu">## 3. Feature enginering</span></span>
+<span id="cb13-63"><a href="#cb13-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-64"><a href="#cb13-64" aria-hidden="true" tabindex="-1"></a>The data frames don't have information about Regions and States of Brazil because. We get this information with the *IES CODE* in the **IES DATABASE**.</span>
+<span id="cb13-65"><a href="#cb13-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-66"><a href="#cb13-66" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, echo=F}</span></span>
+<span id="cb13-67"><a href="#cb13-67" aria-hidden="true" tabindex="-1"></a>regions_states <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">'/home/fredvasconcelos/Documentos/educacao/ies/ies_2021.CSV'</span>, <span class="at">sep =</span> <span class="st">';'</span>, <span class="at">encoding =</span> <span class="st">'latin1'</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb13-68"><a href="#cb13-68" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(CO_IES, <span class="at">NO_UF =</span> NO_UF_IES, <span class="at">NO_REGIAO =</span> NO_REGIAO_IES) <span class="sc">%&gt;%</span></span>
+<span id="cb13-69"><a href="#cb13-69" aria-hidden="true" tabindex="-1"></a>  janitor<span class="sc">::</span><span class="fu">clean_names</span>()</span>
+<span id="cb13-70"><a href="#cb13-70" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb13-71"><a href="#cb13-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-72"><a href="#cb13-72" aria-hidden="true" tabindex="-1"></a><span class="fu">## 4. View data frame structure</span></span>
+<span id="cb13-73"><a href="#cb13-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-76"><a href="#cb13-76" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb13-77"><a href="#cb13-77" aria-hidden="true" tabindex="-1"></a>listed_df <span class="sc">%&gt;%</span></span>
+<span id="cb13-78"><a href="#cb13-78" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(<span class="at">cols =</span> <span class="st">'.'</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb13-79"><a href="#cb13-79" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span>
+<span id="cb13-80"><a href="#cb13-80" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb13-81"><a href="#cb13-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-82"><a href="#cb13-82" aria-hidden="true" tabindex="-1"></a><span class="fu">## 5. Describe variables</span></span>
+<span id="cb13-83"><a href="#cb13-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-86"><a href="#cb13-86" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb13-87"><a href="#cb13-87" aria-hidden="true" tabindex="-1"></a>listed_df <span class="sc">%&gt;%</span></span>
+<span id="cb13-88"><a href="#cb13-88" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(<span class="at">cols =</span> <span class="st">'.'</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb13-89"><a href="#cb13-89" aria-hidden="true" tabindex="-1"></a>  skimr<span class="sc">::</span><span class="fu">skim</span>()</span>
+<span id="cb13-90"><a href="#cb13-90" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb13-91"><a href="#cb13-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-92"><a href="#cb13-92" aria-hidden="true" tabindex="-1"></a><span class="fu">## 6. Create new data frames</span></span>
+<span id="cb13-93"><a href="#cb13-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-94"><a href="#cb13-94" aria-hidden="true" tabindex="-1"></a><span class="fu">### 6.1. Students profile</span></span>
+<span id="cb13-95"><a href="#cb13-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-98"><a href="#cb13-98" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb13-99"><a href="#cb13-99" aria-hidden="true" tabindex="-1"></a>students <span class="ot">&lt;-</span> listed_df <span class="sc">%&gt;%</span></span>
+<span id="cb13-100"><a href="#cb13-100" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(<span class="at">cols =</span> <span class="st">'.'</span>) <span class="sc">%&gt;%</span> <span class="co"># unlist and merge data.frames</span></span>
+<span id="cb13-101"><a href="#cb13-101" aria-hidden="true" tabindex="-1"></a>  janitor<span class="sc">::</span><span class="fu">clean_names</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb13-102"><a href="#cb13-102" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(co_ies, nu_ano_censo, no_regiao, no_uf, <span class="fu">starts_with</span>(<span class="st">'qt_in'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb13-103"><a href="#cb13-103" aria-hidden="true" tabindex="-1"></a>  <span class="fu">right_join</span>(regions_states, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'co_ies'</span>, <span class="st">'no_regiao'</span>, <span class="st">'no_uf'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb13-104"><a href="#cb13-104" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(nu_ano_censo, no_regiao, no_uf) <span class="sc">%&gt;%</span></span>
+<span id="cb13-105"><a href="#cb13-105" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise_all</span>(sum, <span class="at">na.rm =</span> T) <span class="sc">%&gt;%</span></span>
+<span id="cb13-106"><a href="#cb13-106" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb13-107"><a href="#cb13-107" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb13-108"><a href="#cb13-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-109"><a href="#cb13-109" aria-hidden="true" tabindex="-1"></a><span class="fu">### 6.2. Statistics tests</span></span>
+<span id="cb13-110"><a href="#cb13-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-113"><a href="#cb13-113" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb13-114"><a href="#cb13-114" aria-hidden="true" tabindex="-1"></a>stats_df <span class="ot">&lt;-</span> students <span class="sc">%&gt;%</span></span>
+<span id="cb13-115"><a href="#cb13-115" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">data =</span> zoo<span class="sc">::</span><span class="fu">as.yearmon</span>(nu_ano_censo)) <span class="sc">%&gt;%</span></span>
+<span id="cb13-116"><a href="#cb13-116" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(data, no_regiao, no_uf) <span class="sc">%&gt;%</span></span>
+<span id="cb13-117"><a href="#cb13-117" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise_if</span>(is.numeric, sum) <span class="sc">%&gt;%</span></span>
+<span id="cb13-118"><a href="#cb13-118" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb13-119"><a href="#cb13-119" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(data, no_regiao, no_uf, qt_ing_fem<span class="sc">:</span>qt_ing_noturno, qt_ing_0_17<span class="sc">:</span>qt_ing_cornd,</span>
+<span id="cb13-120"><a href="#cb13-120" aria-hidden="true" tabindex="-1"></a>         qt_ing_financ<span class="sc">:</span>qt_ing_apoio_social) <span class="sc">%&gt;%</span></span>
+<span id="cb13-121"><a href="#cb13-121" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gather</span>(<span class="st">'var'</span>, <span class="st">'value'</span>, <span class="dv">4</span><span class="sc">:</span><span class="dv">42</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb13-122"><a href="#cb13-122" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(data, no_regiao, no_uf, var) <span class="sc">%&gt;%</span></span>
+<span id="cb13-123"><a href="#cb13-123" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise_if</span>(is.numeric, sum) <span class="sc">%&gt;%</span></span>
+<span id="cb13-124"><a href="#cb13-124" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb13-125"><a href="#cb13-125" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb13-126"><a href="#cb13-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-127"><a href="#cb13-127" aria-hidden="true" tabindex="-1"></a><span class="fu">### 6.3. Names for linear model table</span></span>
+<span id="cb13-128"><a href="#cb13-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-131"><a href="#cb13-131" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb13-132"><a href="#cb13-132" aria-hidden="true" tabindex="-1"></a>labels_table_model <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">`</span><span class="at">(Intercept)</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'Intercept'</span>,</span>
+<span id="cb13-133"><a href="#cb13-133" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(var)qt_ing_fem</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'Sex (Female)'</span>,</span>
+<span id="cb13-134"><a href="#cb13-134" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(var)qt_ing_masc</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'Sex (Male)'</span>,</span>
+<span id="cb13-135"><a href="#cb13-135" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(var)qt_ing_amarela</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'Ethnic (Asian)'</span>,</span>
+<span id="cb13-136"><a href="#cb13-136" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(var)qt_ing_branca</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'Ethnic (White)'</span>,</span>
+<span id="cb13-137"><a href="#cb13-137" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(var)qt_ing_parda</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'Ethnic (Brown)'</span>,</span>
+<span id="cb13-138"><a href="#cb13-138" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(var)qt_ing_preta</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'Ethnic (Black)'</span>,</span>
+<span id="cb13-139"><a href="#cb13-139" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(var)qt_ing_indigena</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'Ethnic (Indigenous)'</span>,</span>
+<span id="cb13-140"><a href="#cb13-140" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(var)qt_ing_cornd</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'Ethnic (Not declared)'</span>,</span>
+<span id="cb13-141"><a href="#cb13-141" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(var)qt_ing_0_17</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'Age (&lt;18)'</span>,</span>
+<span id="cb13-142"><a href="#cb13-142" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(var)qt_ing_18_24</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'Age (18~24)'</span>, </span>
+<span id="cb13-143"><a href="#cb13-143" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(var)qt_ing_25_29</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'Age (25~29)'</span>, </span>
+<span id="cb13-144"><a href="#cb13-144" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(var)qt_ing_30_34</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'Age (30~34)'</span>, </span>
+<span id="cb13-145"><a href="#cb13-145" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(var)qt_ing_35_39</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'Age (35~39)'</span>, </span>
+<span id="cb13-146"><a href="#cb13-146" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(var)qt_ing_40_49</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'Age (40~49)'</span>, </span>
+<span id="cb13-147"><a href="#cb13-147" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(var)qt_ing_50_59</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'Age (50~59)'</span>, </span>
+<span id="cb13-148"><a href="#cb13-148" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(var)qt_ing_60_mais</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'Age (&gt;60)'</span>,</span>
+<span id="cb13-149"><a href="#cb13-149" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(var)qt_ing_diurno</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'Shift (Diurnal)'</span>,</span>
+<span id="cb13-150"><a href="#cb13-150" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(var)qt_ing_noturno</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'Shift (Nocturnal)'</span>,</span>
+<span id="cb13-151"><a href="#cb13-151" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(var)qt_ing_procescprivada</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'Type high school (Private)'</span>,</span>
+<span id="cb13-152"><a href="#cb13-152" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(var)qt_ing_procescpublica</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'Type high school (Public)'</span>,</span>
+<span id="cb13-153"><a href="#cb13-153" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(var)qt_ing_procnaoinformada</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'Type high school (Not declared)'</span>,</span>
+<span id="cb13-154"><a href="#cb13-154" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(var)qt_ing_apoio_social</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'Any Social Support'</span>,</span>
+<span id="cb13-155"><a href="#cb13-155" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(var)qt_ing_reserva_vaga</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'Social Support (Quotas)'</span>,</span>
+<span id="cb13-156"><a href="#cb13-156" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(var)qt_ing_rvetnico</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'Social Support (Ethnic quotas)'</span>,</span>
+<span id="cb13-157"><a href="#cb13-157" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(var)qt_ing_rvoutros</span><span class="st">`</span> <span class="ot">=</span>  <span class="st">'Social Support (Other quotas)'</span>,</span>
+<span id="cb13-158"><a href="#cb13-158" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(var)qt_ing_rvpdef</span><span class="st">`</span> <span class="ot">=</span>  <span class="st">'Social Support (Disabilities quotas)'</span>,</span>
+<span id="cb13-159"><a href="#cb13-159" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(var)qt_ing_rvredepublica</span><span class="st">`</span> <span class="ot">=</span>  <span class="st">'Social Support (Public high school quotas)'</span>,</span>
+<span id="cb13-160"><a href="#cb13-160" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(var)qt_ing_rvsocial_rf</span><span class="st">`</span> <span class="ot">=</span>  <span class="st">'Social Support (Family income quotas)'</span>,</span>
+<span id="cb13-161"><a href="#cb13-161" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(var)qt_ing_parfor</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'Social Support (PARFOR)'</span>,</span>
+<span id="cb13-162"><a href="#cb13-162" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(var)qt_ing_financ</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'Income Support'</span>,</span>
+<span id="cb13-163"><a href="#cb13-163" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(var)qt_ing_financ_nreemb</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'Income Support (Non-refundable)'</span>, </span>
+<span id="cb13-164"><a href="#cb13-164" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(var)qt_ing_financ_nreemb_outros</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'Income Support (Non-refundable others)'</span>,</span>
+<span id="cb13-165"><a href="#cb13-165" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(var)qt_ing_financ_reemb</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'Income Support (Refundable)'</span>, </span>
+<span id="cb13-166"><a href="#cb13-166" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(var)qt_ing_financ_reemb_outros</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'Income Support (Refundable others)'</span>,</span>
+<span id="cb13-167"><a href="#cb13-167" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(var)qt_ing_fies</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'Income Support (FIES)'</span>,</span>
+<span id="cb13-168"><a href="#cb13-168" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(var)qt_ing_rpfies</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'Income Support (Refundable FIES)'</span>,</span>
+<span id="cb13-169"><a href="#cb13-169" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(var)qt_ing_nrpfies</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'Income Support (Non-refundable FIES)'</span>,</span>
+<span id="cb13-170"><a href="#cb13-170" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(var)qt_ing_prounii</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'Income Support (PROUNI whole)'</span>,</span>
+<span id="cb13-171"><a href="#cb13-171" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(var)qt_ing_prounip</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'Income Support (PROUNI parcial)'</span>,</span>
+<span id="cb13-172"><a href="#cb13-172" aria-hidden="true" tabindex="-1"></a>                        <span class="at">data =</span> <span class="st">'Date'</span>,</span>
+<span id="cb13-173"><a href="#cb13-173" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(no_regiao)Nordeste</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'Region (Nordeste)'</span>,</span>
+<span id="cb13-174"><a href="#cb13-174" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(no_regiao)Norte</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'Region (Norte)'</span>,</span>
+<span id="cb13-175"><a href="#cb13-175" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(no_regiao)Sudeste</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'Region (Sudeste)'</span>,</span>
+<span id="cb13-176"><a href="#cb13-176" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(no_regiao)Sul</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'Region (Sul)'</span>,</span>
+<span id="cb13-177"><a href="#cb13-177" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(no_uf)Alagoas</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'State (Alagoas)'</span>,</span>
+<span id="cb13-178"><a href="#cb13-178" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(no_uf)Amapá</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'State (Amapá)'</span>,</span>
+<span id="cb13-179"><a href="#cb13-179" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(no_uf)Amazonas</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'State (Amazonas)'</span>,</span>
+<span id="cb13-180"><a href="#cb13-180" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(no_uf)Bahia</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'State (Bahia)'</span>,</span>
+<span id="cb13-181"><a href="#cb13-181" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(no_uf)Ceará</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'State (Ceará)'</span>,</span>
+<span id="cb13-182"><a href="#cb13-182" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(no_uf)Distrito Federal</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'State (Distrito Federal)'</span>,</span>
+<span id="cb13-183"><a href="#cb13-183" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(no_uf)Espírito Santo</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'State (Espirito Santo)'</span>,</span>
+<span id="cb13-184"><a href="#cb13-184" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(no_uf)Goiás</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'State (Goiás)'</span>,</span>
+<span id="cb13-185"><a href="#cb13-185" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(no_uf)Maranhão</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'State (Maranhão)'</span>,</span>
+<span id="cb13-186"><a href="#cb13-186" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(no_uf)Mato Grosso</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'State (Mato Grosso)'</span>,</span>
+<span id="cb13-187"><a href="#cb13-187" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(no_uf)Minas Gerais</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'State (Minas Gerais)'</span>,</span>
+<span id="cb13-188"><a href="#cb13-188" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(no_uf)Pará</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'State (Pará)'</span>,</span>
+<span id="cb13-189"><a href="#cb13-189" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(no_uf)Paraíba</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'State (Paraíba)'</span>,</span>
+<span id="cb13-190"><a href="#cb13-190" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(no_uf)Paraná</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'State (Paraná)'</span>,</span>
+<span id="cb13-191"><a href="#cb13-191" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(no_uf)Pernambuco</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'State (Alagoas)'</span>,</span>
+<span id="cb13-192"><a href="#cb13-192" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(no_uf)Piauí</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'State (Pernambuco)'</span>,</span>
+<span id="cb13-193"><a href="#cb13-193" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(no_uf)Rio de Janeiro</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'State (Rio de Janeiro)'</span>,</span>
+<span id="cb13-194"><a href="#cb13-194" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(no_uf)Rio Grande do Norte</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'State (Rio Grande do Norte)'</span>,</span>
+<span id="cb13-195"><a href="#cb13-195" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(no_uf)Rio Grande do Sul</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'State (Rio Grande do Sul)'</span>,</span>
+<span id="cb13-196"><a href="#cb13-196" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(no_uf)Rondônia</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'State (Rondônia)'</span>,</span>
+<span id="cb13-197"><a href="#cb13-197" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(no_uf)Roraima</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'State (Roraima)'</span>,</span>
+<span id="cb13-198"><a href="#cb13-198" aria-hidden="true" tabindex="-1"></a>                        <span class="st">`</span><span class="at">as.factor(no_uf)Tocantins</span><span class="st">`</span> <span class="ot">=</span> <span class="st">'State (Tocantins)'</span></span>
+<span id="cb13-199"><a href="#cb13-199" aria-hidden="true" tabindex="-1"></a>                        )</span>
+<span id="cb13-200"><a href="#cb13-200" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb13-201"><a href="#cb13-201" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-202"><a href="#cb13-202" aria-hidden="true" tabindex="-1"></a><span class="fu">### 6.4. Cluster - Region and Sex</span></span>
+<span id="cb13-203"><a href="#cb13-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-206"><a href="#cb13-206" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb13-207"><a href="#cb13-207" aria-hidden="true" tabindex="-1"></a>cluster_regiao_sex <span class="ot">&lt;-</span> stats_df <span class="sc">%&gt;%</span></span>
+<span id="cb13-208"><a href="#cb13-208" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> var, <span class="at">values_from =</span> value) <span class="sc">%&gt;%</span></span>
+<span id="cb13-209"><a href="#cb13-209" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(no_regiao) <span class="sc">%&gt;%</span></span>
+<span id="cb13-210"><a href="#cb13-210" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise_if</span>(is.numeric, sum) <span class="sc">%&gt;%</span></span>
+<span id="cb13-211"><a href="#cb13-211" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(no_regiao, <span class="at">Male =</span> qt_ing_masc, <span class="at">Female =</span> qt_ing_fem)</span>
+<span id="cb13-212"><a href="#cb13-212" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-213"><a href="#cb13-213" aria-hidden="true" tabindex="-1"></a>names_cluster_regiao_sex <span class="ot">&lt;-</span> cluster_regiao_sex<span class="sc">$</span>no_regiao</span>
+<span id="cb13-214"><a href="#cb13-214" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-215"><a href="#cb13-215" aria-hidden="true" tabindex="-1"></a>cluster_regiao_sex <span class="ot">&lt;-</span> <span class="fu">scale</span>(cluster_regiao_sex[,<span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>])</span>
+<span id="cb13-216"><a href="#cb13-216" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-217"><a href="#cb13-217" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(cluster_regiao_sex) <span class="ot">&lt;-</span> names_cluster_regiao_sex</span>
+<span id="cb13-218"><a href="#cb13-218" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb13-219"><a href="#cb13-219" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-220"><a href="#cb13-220" aria-hidden="true" tabindex="-1"></a><span class="fu">### 6.5. Cluster - States and Sex</span></span>
+<span id="cb13-221"><a href="#cb13-221" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-224"><a href="#cb13-224" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb13-225"><a href="#cb13-225" aria-hidden="true" tabindex="-1"></a>cluster_uf_sex <span class="ot">&lt;-</span> stats_df <span class="sc">%&gt;%</span></span>
+<span id="cb13-226"><a href="#cb13-226" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> var, <span class="at">values_from =</span> value) <span class="sc">%&gt;%</span></span>
+<span id="cb13-227"><a href="#cb13-227" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(no_uf) <span class="sc">%&gt;%</span></span>
+<span id="cb13-228"><a href="#cb13-228" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise_if</span>(is.numeric, sum) <span class="sc">%&gt;%</span></span>
+<span id="cb13-229"><a href="#cb13-229" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(no_uf, <span class="at">Male =</span> qt_ing_masc, <span class="at">Female =</span> qt_ing_fem) <span class="sc">%&gt;%</span></span>
+<span id="cb13-230"><a href="#cb13-230" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb13-231"><a href="#cb13-231" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-232"><a href="#cb13-232" aria-hidden="true" tabindex="-1"></a>names_cluster_uf_sex <span class="ot">&lt;-</span> cluster_uf_sex<span class="sc">$</span>no_uf</span>
+<span id="cb13-233"><a href="#cb13-233" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-234"><a href="#cb13-234" aria-hidden="true" tabindex="-1"></a>cluster_uf_sex <span class="ot">&lt;-</span> <span class="fu">scale</span>(cluster_uf_sex[,<span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>])</span>
+<span id="cb13-235"><a href="#cb13-235" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-236"><a href="#cb13-236" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(cluster_uf_sex) <span class="ot">&lt;-</span> names_cluster_uf_sex</span>
+<span id="cb13-237"><a href="#cb13-237" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb13-238"><a href="#cb13-238" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-239"><a href="#cb13-239" aria-hidden="true" tabindex="-1"></a><span class="fu">### 6.6. Cluster - Region and Ethnic group</span></span>
+<span id="cb13-240"><a href="#cb13-240" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-243"><a href="#cb13-243" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb13-244"><a href="#cb13-244" aria-hidden="true" tabindex="-1"></a>cluster_regiao_ethnic <span class="ot">&lt;-</span> stats_df <span class="sc">%&gt;%</span></span>
+<span id="cb13-245"><a href="#cb13-245" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> var, <span class="at">values_from =</span> value) <span class="sc">%&gt;%</span></span>
+<span id="cb13-246"><a href="#cb13-246" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(no_regiao) <span class="sc">%&gt;%</span></span>
+<span id="cb13-247"><a href="#cb13-247" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise_if</span>(is.numeric, sum) <span class="sc">%&gt;%</span></span>
+<span id="cb13-248"><a href="#cb13-248" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(no_regiao, </span>
+<span id="cb13-249"><a href="#cb13-249" aria-hidden="true" tabindex="-1"></a>         <span class="at">White =</span> qt_ing_branca, </span>
+<span id="cb13-250"><a href="#cb13-250" aria-hidden="true" tabindex="-1"></a>         <span class="at">Black =</span> qt_ing_preta,</span>
+<span id="cb13-251"><a href="#cb13-251" aria-hidden="true" tabindex="-1"></a>         <span class="at">Brown =</span> qt_ing_parda,</span>
+<span id="cb13-252"><a href="#cb13-252" aria-hidden="true" tabindex="-1"></a>         <span class="at">Asian =</span> qt_ing_amarela,</span>
+<span id="cb13-253"><a href="#cb13-253" aria-hidden="true" tabindex="-1"></a>         <span class="at">Not_declared =</span> qt_ing_cornd) <span class="sc">%&gt;%</span></span>
+<span id="cb13-254"><a href="#cb13-254" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb13-255"><a href="#cb13-255" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-256"><a href="#cb13-256" aria-hidden="true" tabindex="-1"></a>names_cluster_regiao_ethnic <span class="ot">&lt;-</span> cluster_regiao_ethnic<span class="sc">$</span>no_regiao</span>
+<span id="cb13-257"><a href="#cb13-257" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-258"><a href="#cb13-258" aria-hidden="true" tabindex="-1"></a>cluster_regiao_ethnic <span class="ot">&lt;-</span> <span class="fu">scale</span>(cluster_regiao_ethnic[,<span class="dv">2</span><span class="sc">:</span><span class="dv">6</span>])</span>
+<span id="cb13-259"><a href="#cb13-259" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-260"><a href="#cb13-260" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(cluster_regiao_ethnic) <span class="ot">&lt;-</span> names_cluster_regiao_ethnic</span>
+<span id="cb13-261"><a href="#cb13-261" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb13-262"><a href="#cb13-262" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-263"><a href="#cb13-263" aria-hidden="true" tabindex="-1"></a><span class="fu">### 6.7. Cluster - States and ethnic group</span></span>
+<span id="cb13-264"><a href="#cb13-264" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-265"><a href="#cb13-265" aria-hidden="true" tabindex="-1"></a><span class="in">````{r}</span></span>
+<span id="cb13-266"><a href="#cb13-266" aria-hidden="true" tabindex="-1"></a>cluster_uf_ethnic <span class="ot">&lt;-</span> stats_df <span class="sc">%&gt;%</span></span>
+<span id="cb13-267"><a href="#cb13-267" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> var, <span class="at">values_from =</span> value) <span class="sc">%&gt;%</span></span>
+<span id="cb13-268"><a href="#cb13-268" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(no_uf) <span class="sc">%&gt;%</span></span>
+<span id="cb13-269"><a href="#cb13-269" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise_if</span>(is.numeric, sum) <span class="sc">%&gt;%</span></span>
+<span id="cb13-270"><a href="#cb13-270" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(no_uf, </span>
+<span id="cb13-271"><a href="#cb13-271" aria-hidden="true" tabindex="-1"></a>         <span class="at">White =</span> qt_ing_branca, </span>
+<span id="cb13-272"><a href="#cb13-272" aria-hidden="true" tabindex="-1"></a>         <span class="at">Black =</span> qt_ing_preta,</span>
+<span id="cb13-273"><a href="#cb13-273" aria-hidden="true" tabindex="-1"></a>         <span class="at">Brown =</span> qt_ing_parda,</span>
+<span id="cb13-274"><a href="#cb13-274" aria-hidden="true" tabindex="-1"></a>         <span class="at">Asian =</span> qt_ing_amarela,</span>
+<span id="cb13-275"><a href="#cb13-275" aria-hidden="true" tabindex="-1"></a>         <span class="at">Not_declared =</span> qt_ing_cornd) <span class="sc">%&gt;%</span></span>
+<span id="cb13-276"><a href="#cb13-276" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb13-277"><a href="#cb13-277" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-278"><a href="#cb13-278" aria-hidden="true" tabindex="-1"></a>names_cluster_uf_ethnic <span class="ot">&lt;-</span> cluster_uf_ethnic<span class="sc">$</span>no_uf</span>
+<span id="cb13-279"><a href="#cb13-279" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-280"><a href="#cb13-280" aria-hidden="true" tabindex="-1"></a>cluster_uf_ethnic <span class="ot">&lt;-</span> <span class="fu">scale</span>(cluster_uf_ethnic[,<span class="dv">2</span><span class="sc">:</span><span class="dv">6</span>])</span>
+<span id="cb13-281"><a href="#cb13-281" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-282"><a href="#cb13-282" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(cluster_uf_ethnic) <span class="ot">&lt;-</span> names_cluster_uf_ethnic</span>
+<span id="cb13-283"><a href="#cb13-283" aria-hidden="true" tabindex="-1"></a><span class="st">```</span></span>
+<span id="cb13-284"><a href="#cb13-284" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-285"><a href="#cb13-285" aria-hidden="true" tabindex="-1"></a><span class="at">:::</span></span>
+<span id="cb13-286"><a href="#cb13-286" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-287"><a href="#cb13-287" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-288"><a href="#cb13-288" aria-hidden="true" tabindex="-1"></a></span>
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
 </div> <!-- /content -->
 <footer class="footer"><div class="nav-footer">
     <div class="nav-footer-left">Made with <a href="https://quarto.org">Quarto</a></div>   

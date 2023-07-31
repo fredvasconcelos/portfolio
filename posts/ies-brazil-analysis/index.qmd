@@ -9,21 +9,261 @@ toc-title: "Contents"
 toc-location: left
 ---
 
-::: tabset
+```{r setup, include=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width = 12, fig.height = 8, out.width = '50%')
 
-# Texto
+```
+
+::: panel-tabset
+
+# Article
+
+## Description
+
+Nosso objetivo é ler os dados do governo e entender padrões ao longo dos anos
 
 # Code
+
+## 1. Load libraries
+
+```{r}
+library(tidyverse)
+library(rstatix)
+library(ggplot2)
+library(factoextra)
+library(ggrepel)
+library(cluster)
+library(ggthemes)
+```
+
+## 2. Load data
+
+We create a list of data frames for faster de creation of the data.
+
+```{r, echo=FALSE}
+file_paths <- fs::dir_ls("/home/fredvasconcelos/Documentos/educacao/alunos/2009_2021/")
+
+#df_2021 <- read.csv('/home/fredvasconcelos/Documentos/educacao/alunos/2009_2021/cursos_2021.CSV', sep = ';', encoding = 'latin1')
+
+```
+
+```{r}
+listed_df <- file_paths %>%
+  map(function (path) {
+    read.csv(path, sep = ';', encoding = 'latin1')
+  }) %>%
+  tibble() 
+```
+
+## 3. Feature enginering
+
+The data frames don't have information about Regions and States of Brazil because. We get this information with the *IES CODE* in the **IES DATABASE**.
+
+```{r, echo=F}
+regions_states <- read.csv('/home/fredvasconcelos/Documentos/educacao/ies/ies_2021.CSV', sep = ';', encoding = 'latin1') %>%
+  select(CO_IES, NO_UF = NO_UF_IES, NO_REGIAO = NO_REGIAO_IES) %>%
+  janitor::clean_names()
+```
+
+## 4. View data frame structure
+
+```{r}
+listed_df %>%
+  unnest(cols = '.') %>%
+  head()
+```
+
+## 5. Describe variables
+
+```{r}
+listed_df %>%
+  unnest(cols = '.') %>%
+  skimr::skim()
+```
+
+## 6. Create new data frames
+
+### 6.1. Students profile
+
+```{r}
+students <- listed_df %>%
+  unnest(cols = '.') %>% # unlist and merge data.frames
+  janitor::clean_names() %>%
+  select(co_ies, nu_ano_censo, no_regiao, no_uf, starts_with('qt_in')) %>%
+  right_join(regions_states, by = c('co_ies', 'no_regiao', 'no_uf')) %>%
+  group_by(nu_ano_censo, no_regiao, no_uf) %>%
+  summarise_all(sum, na.rm = T) %>%
+  ungroup()
+```
+
+### 6.2. Statistics tests
+
+```{r}
+stats_df <- students %>%
+  mutate(data = zoo::as.yearmon(nu_ano_censo)) %>%
+  group_by(data, no_regiao, no_uf) %>%
+  summarise_if(is.numeric, sum) %>%
+  ungroup() %>%
+  select(data, no_regiao, no_uf, qt_ing_fem:qt_ing_noturno, qt_ing_0_17:qt_ing_cornd,
+         qt_ing_financ:qt_ing_apoio_social) %>%
+  gather('var', 'value', 4:42) %>%
+  group_by(data, no_regiao, no_uf, var) %>%
+  summarise_if(is.numeric, sum) %>%
+  ungroup()
+```
+
+### 6.3. Names for linear model table
+
+```{r}
+labels_table_model <- c(`(Intercept)` = 'Intercept',
+                        `as.factor(var)qt_ing_fem` = 'Sex (Female)',
+                        `as.factor(var)qt_ing_masc` = 'Sex (Male)',
+                        `as.factor(var)qt_ing_amarela` = 'Ethnic (Asian)',
+                        `as.factor(var)qt_ing_branca` = 'Ethnic (White)',
+                        `as.factor(var)qt_ing_parda` = 'Ethnic (Brown)',
+                        `as.factor(var)qt_ing_preta` = 'Ethnic (Black)',
+                        `as.factor(var)qt_ing_indigena` = 'Ethnic (Indigenous)',
+                        `as.factor(var)qt_ing_cornd` = 'Ethnic (Not declared)',
+                        `as.factor(var)qt_ing_0_17` = 'Age (<18)',
+                        `as.factor(var)qt_ing_18_24` = 'Age (18~24)', 
+                        `as.factor(var)qt_ing_25_29` = 'Age (25~29)', 
+                        `as.factor(var)qt_ing_30_34` = 'Age (30~34)', 
+                        `as.factor(var)qt_ing_35_39` = 'Age (35~39)', 
+                        `as.factor(var)qt_ing_40_49` = 'Age (40~49)', 
+                        `as.factor(var)qt_ing_50_59` = 'Age (50~59)', 
+                        `as.factor(var)qt_ing_60_mais` = 'Age (>60)',
+                        `as.factor(var)qt_ing_diurno` = 'Shift (Diurnal)',
+                        `as.factor(var)qt_ing_noturno` = 'Shift (Nocturnal)',
+                        `as.factor(var)qt_ing_procescprivada` = 'Type high school (Private)',
+                        `as.factor(var)qt_ing_procescpublica` = 'Type high school (Public)',
+                        `as.factor(var)qt_ing_procnaoinformada` = 'Type high school (Not declared)',
+                        `as.factor(var)qt_ing_apoio_social` = 'Any Social Support',
+                        `as.factor(var)qt_ing_reserva_vaga` = 'Social Support (Quotas)',
+                        `as.factor(var)qt_ing_rvetnico` = 'Social Support (Ethnic quotas)',
+                        `as.factor(var)qt_ing_rvoutros` =  'Social Support (Other quotas)',
+                        `as.factor(var)qt_ing_rvpdef` =  'Social Support (Disabilities quotas)',
+                        `as.factor(var)qt_ing_rvredepublica` =  'Social Support (Public high school quotas)',
+                        `as.factor(var)qt_ing_rvsocial_rf` =  'Social Support (Family income quotas)',
+                        `as.factor(var)qt_ing_parfor` = 'Social Support (PARFOR)',
+                        `as.factor(var)qt_ing_financ` = 'Income Support',
+                        `as.factor(var)qt_ing_financ_nreemb` = 'Income Support (Non-refundable)', 
+                        `as.factor(var)qt_ing_financ_nreemb_outros` = 'Income Support (Non-refundable others)',
+                        `as.factor(var)qt_ing_financ_reemb` = 'Income Support (Refundable)', 
+                        `as.factor(var)qt_ing_financ_reemb_outros` = 'Income Support (Refundable others)',
+                        `as.factor(var)qt_ing_fies` = 'Income Support (FIES)',
+                        `as.factor(var)qt_ing_rpfies` = 'Income Support (Refundable FIES)',
+                        `as.factor(var)qt_ing_nrpfies` = 'Income Support (Non-refundable FIES)',
+                        `as.factor(var)qt_ing_prounii` = 'Income Support (PROUNI whole)',
+                        `as.factor(var)qt_ing_prounip` = 'Income Support (PROUNI parcial)',
+                        data = 'Date',
+                        `as.factor(no_regiao)Nordeste` = 'Region (Nordeste)',
+                        `as.factor(no_regiao)Norte` = 'Region (Norte)',
+                        `as.factor(no_regiao)Sudeste` = 'Region (Sudeste)',
+                        `as.factor(no_regiao)Sul` = 'Region (Sul)',
+                        `as.factor(no_uf)Alagoas` = 'State (Alagoas)',
+                        `as.factor(no_uf)Amapá` = 'State (Amapá)',
+                        `as.factor(no_uf)Amazonas` = 'State (Amazonas)',
+                        `as.factor(no_uf)Bahia` = 'State (Bahia)',
+                        `as.factor(no_uf)Ceará`	= 'State (Ceará)',
+                        `as.factor(no_uf)Distrito Federal` = 'State (Distrito Federal)',
+                        `as.factor(no_uf)Espírito Santo` = 'State (Espirito Santo)',
+                        `as.factor(no_uf)Goiás` = 'State (Goiás)',
+                        `as.factor(no_uf)Maranhão` = 'State (Maranhão)',
+                        `as.factor(no_uf)Mato Grosso` = 'State (Mato Grosso)',
+                        `as.factor(no_uf)Minas Gerais` = 'State (Minas Gerais)',
+                        `as.factor(no_uf)Pará` = 'State (Pará)',
+                        `as.factor(no_uf)Paraíba` = 'State (Paraíba)',
+                        `as.factor(no_uf)Paraná` = 'State (Paraná)',
+                        `as.factor(no_uf)Pernambuco` = 'State (Alagoas)',
+                        `as.factor(no_uf)Piauí` = 'State (Pernambuco)',
+                        `as.factor(no_uf)Rio de Janeiro` = 'State (Rio de Janeiro)',
+                        `as.factor(no_uf)Rio Grande do Norte` = 'State (Rio Grande do Norte)',
+                        `as.factor(no_uf)Rio Grande do Sul` = 'State (Rio Grande do Sul)',
+                        `as.factor(no_uf)Rondônia` = 'State (Rondônia)',
+                        `as.factor(no_uf)Roraima` = 'State (Roraima)',
+                        `as.factor(no_uf)Tocantins` = 'State (Tocantins)'
+                        )
+```
+
+### 6.4. Cluster - Region and Sex
+
+```{r}
+cluster_regiao_sex <- stats_df %>%
+  pivot_wider(names_from = var, values_from = value) %>%
+  group_by(no_regiao) %>%
+  summarise_if(is.numeric, sum) %>%
+  select(no_regiao, Male = qt_ing_masc, Female = qt_ing_fem)
+
+names_cluster_regiao_sex <- cluster_regiao_sex$no_regiao
+
+cluster_regiao_sex <- scale(cluster_regiao_sex[,2:3])
+
+rownames(cluster_regiao_sex) <- names_cluster_regiao_sex
+```
+
+### 6.5. Cluster - States and Sex
+
+```{r}
+cluster_uf_sex <- stats_df %>%
+  pivot_wider(names_from = var, values_from = value) %>%
+  group_by(no_uf) %>%
+  summarise_if(is.numeric, sum) %>%
+  select(no_uf, Male = qt_ing_masc, Female = qt_ing_fem) %>%
+  ungroup()
+
+names_cluster_uf_sex <- cluster_uf_sex$no_uf
+
+cluster_uf_sex <- scale(cluster_uf_sex[,2:3])
+
+rownames(cluster_uf_sex) <- names_cluster_uf_sex
+```
+
+### 6.6. Cluster - Region and Ethnic group
+
+```{r}
+cluster_regiao_ethnic <- stats_df %>%
+  pivot_wider(names_from = var, values_from = value) %>%
+  group_by(no_regiao) %>%
+  summarise_if(is.numeric, sum) %>%
+  select(no_regiao, 
+         White = qt_ing_branca, 
+         Black = qt_ing_preta,
+         Brown = qt_ing_parda,
+         Asian = qt_ing_amarela,
+         Not_declared = qt_ing_cornd) %>%
+  ungroup()
+
+names_cluster_regiao_ethnic <- cluster_regiao_ethnic$no_regiao
+
+cluster_regiao_ethnic <- scale(cluster_regiao_ethnic[,2:6])
+
+rownames(cluster_regiao_ethnic) <- names_cluster_regiao_ethnic
+```
+
+### 6.7. Cluster - States and ethnic group
+
+````{r}
+cluster_uf_ethnic <- stats_df %>%
+  pivot_wider(names_from = var, values_from = value) %>%
+  group_by(no_uf) %>%
+  summarise_if(is.numeric, sum) %>%
+  select(no_uf, 
+         White = qt_ing_branca, 
+         Black = qt_ing_preta,
+         Brown = qt_ing_parda,
+         Asian = qt_ing_amarela,
+         Not_declared = qt_ing_cornd) %>%
+  ungroup()
+
+names_cluster_uf_ethnic <- cluster_uf_ethnic$no_uf
+
+cluster_uf_ethnic <- scale(cluster_uf_ethnic[,2:6])
+
+rownames(cluster_uf_ethnic) <- names_cluster_uf_ethnic
+```
 
 :::
 
 
 
-# Description
 
-Here we analyse data from superior educational institutions of Brazil. 
-
-```{r setup, include=FALSE, message=FALSE}
-knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width = 12, fig.height = 8, out.width = '50%')
-
-```

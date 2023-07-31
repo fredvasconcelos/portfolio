@@ -1,0 +1,33 @@
+---
+title: "IES Analysis Brazil"
+author: "Fred Vasconcelos"
+date: "2023-07-31"
+categories: [education, analysis, r, ggplot2]
+image: "INSERIR.jpg"
+---
+
+::: panel-tabset
+
+# Article
+
+## 1. Description
+
+### Here we analyse data from superior educational institutions of Brazil. 
+
+
+Tentativa de texto
+
+# Code
+
+```{r}
+12*123
+```
+
+:::
+
+
+```{r setup, include=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width = 12, fig.height = 8, out.width = '50%')
+
+```
+

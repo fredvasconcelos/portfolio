@@ -1,9 +1,0 @@
----
-title: "IES Analysis Brazil"
-author: "Fred Vasconcelos"
-date: "2023-07-31"
-categories: [education, analysis, r, ggplot2]
-image: "image.jpg"
----
-
-# IES Analysis Brazil

@@ -1,0 +1,14 @@
+{
+  "hash": "2fa7ef55e6ad9f87e90307712ddf5c97",
+  "result": {
+    "markdown": "---\ntitle: \"IES Analysis Brazil\"\nauthor: \"Fred Vasconcelos\"\ndate: \"2023-07-31\"\ncategories: [education, analysis, r, ggplot2]\nimage: \"image.jpg\"\n---\n\n\n# IES Analysis Braziç\n\n::: panel-tabset\n\n## Article\n\n## Code\n\n:::\n\n## Article\n\n::: panel-tabset\n\n::: {.cell}\n\n```{.r .cell-code}\n1223*123123\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 150579429\n```\n:::\n:::\n\n:::\n\n::: panel-tabset\n## test 1.2\n\n\n::: {.cell}\n\n```{.r .cell-code}\n3+2334+323*4\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 3629\n```\n:::\n:::\n\n:::\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

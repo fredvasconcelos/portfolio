@@ -1,0 +1,28 @@
+---
+title: "Fred Vasconcelos"
+subtitle: "Data Scientist | BI Analytics"
+image: foto_profissional_2.jpg
+fontsize: 14pt
+about:
+  template: jolla
+  links:
+    - text: Email
+      icon: envelope
+      href: mailto:fredvasconcelos@gmail.com
+    - text: Whatsapp
+      icon: whatsapp
+      href: https://api.whatsapp.com/send/?phone=34644555905&text&type=phone_number&app_absent=0
+    - text: Github
+      icon: github
+      href: https://github.com/fredvasconcelos/
+    - text: Linkedin
+      icon: linkedin
+      href: https://www.linkedin.com/in/fred-vasconcelos-858897263/
+    - text: Research ID
+      icon: person-vcard
+      href: https://orcid.org/0000-0003-3721-7564/
+---
+
+Hi there!
+
+I'm a biologist and MSc in Ecology and I have a profound passion for data science and analytics, statistics, and programming. I have experience with languages R, Python, SQL, DAX and M (Power Query), and also with the softwares Power BI, Tableau and Figma.

@@ -1,0 +1,28 @@
+---
+title: "About"
+subtitle: "Data Scientist | BI Analytics"
+image: foto_profissional_2.jpg
+about:
+  template: jolla
+  links:
+    - text: Email
+      icon: envelope
+      href: mailto:fredvasconcelos@gmail.com
+    - text: Whatsapp
+      icon: whatsapp
+      href: https://api.whatsapp.com/send/?phone=34644555905&text&type=phone_number&app_absent=0
+    - text: Github
+      icon: github
+      href: https://github.com/fredvasconcelos/
+    - text: Linkedin
+      icon: linkedin
+      href: https://www.linkedin.com/in/fred-vasconcelos-858897263/
+    - text: Research ID
+      icon: person-vcard
+      href: https://orcid.org/my-orcid?orcid=0000-0003-3721-7564
+    - text: Curriculum Vitae
+      icon: file-text
+      href: cv_english.pdf
+---
+
+I'm a biologist and MSc in Ecology. I have a profound passion for data analysis, statistics, and programming, with expertise in R, Python, and SQL.

@@ -1,0 +1,4 @@
+- source: project
+  quarto-pub:
+    - id: 46f86484-29b5-4d6c-942d-fca795963723
+      url: 'https://fredvasconcelos.quarto.pub/portfolio'

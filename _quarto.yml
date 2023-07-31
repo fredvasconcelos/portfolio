@@ -1,0 +1,34 @@
+project:
+  type: website
+  output-dir: docs
+website:
+  title: "Portfolio"
+  page-footer: 
+    center: |
+      [Contact me](mailto:fredvasconcelosnt@gmail.com)
+    left:  |
+      Made with [Quarto](https://quarto.org)
+    right: |
+      [Github Code Repo](https://github.com/fredvasconcelos/)
+    background: "black"
+  navbar:
+    left: 
+      - text: Home
+        href: index.qmd
+      - text: Projects
+        href: projects.qmd
+      - text: Resume
+        href: resume.qmd
+    right:
+      - icon: github
+        href: https://github.com/fredvasconcelos/
+      - icon: whatsapp
+        href: https://api.whatsapp.com/send/?phone=34644555905&text&type=phone_number&app_absent=0/
+format:
+  html:
+    theme: 
+      dark: darkly
+      light: cosmo
+    code-link: true
+    code-fold: show
+    highlight-style: github

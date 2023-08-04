@@ -7,26 +7,20 @@ image: "image.jpg"
 toc: true
 toc-title: "Contents"
 toc-location: left
+execute: 
+  cache: true
+editor: 
+  markdown: 
+    wrap: 72
 ---
 
 ```{r setup, include=FALSE, message=FALSE}
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width = 12, fig.height = 8, out.width = '50%')
-
+#save.image('/home/fredvasconcelos/Documentos/educacao/cursos_data2.RData')
+load('/home/fredvasconcelos/Documentos/educacao/cursos_data2.RData')
 ```
 
-::: panel-tabset
-
-# Article
-
-## Description
-
-Nosso objetivo é ler os dados do governo e entender padrões ao longo dos anos
-
-# Code
-
-## 1. Load libraries
-
-```{r}
+```{r, echo=FALSE, message=FALSE}
 library(tidyverse)
 library(rstatix)
 library(ggplot2)
@@ -34,71 +28,707 @@ library(factoextra)
 library(ggrepel)
 library(cluster)
 library(ggthemes)
+library(plotly)
+library(kableExtra)
+library(knitr)
+library(gam)
+library(mgcv)
 ```
 
-## 2. Load data
+# Article
 
-We create a list of data frames for faster de creation of the data.
+# 1. Introduction
 
-```{r, echo=FALSE}
-file_paths <- fs::dir_ls("/home/fredvasconcelos/Documentos/educacao/alunos/2009_2021/")
+O Governo brasileiro vem coletando informações sobre as Instituições de Ensino Superior (IES) de 1995 à 2021 ([Fonte](https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/censo-da-educacao-superior)). Há informações acerca do perfil das IES e dos alunos ao longo do país. Contudo, é importante destacar que há diferenças significativas entre as bases de dados 1995 ~ 2008; estando padronizadas apenas às de 2009 ~ 2021 (see [ETL](#etl) section).
 
-#df_2021 <- read.csv('/home/fredvasconcelos/Documentos/educacao/alunos/2009_2021/cursos_2021.CSV', sep = ';', encoding = 'latin1')
+# 2. Objective
 
+Nosso objetivo foi entender a evolução das instituições de ensino superior (IES) em termos de número e o perfil docente e discente ao longo dos anos amostrados e identificar variáveis que expliquem os padrões encontrados.
+
+# 3. Data Analysis
+
+## 3.1 Time Series - New students
+
+As análise de séries temporais apenas a nível de sexo, uma vez que as bases de dados não dispoẽm das mesmas informações.
+
+Pode-se observar uma tendência de crescimento do número de alunos ao longo dos anos, tanto os do sexo masculino, quanto do feminino (Figura 1). As estatísticas descritivas podem ser vistas na Table 1.
+
+::: panel-tabset
+
+### Figure 1
+
+```{r, message=FALSE, fig.dim=c(8,6)}
+ts_hm %>%
+  gather('var', 'value', 3:10) %>%
+  separate(var, c('var1', 'var2'), sep = 'qt_ing_') %>%
+  separate(var2, c('sex', 'func'), sep = '_') %>%
+  select(-var1) %>%
+  mutate(sex = ifelse(sex == 'fem', 'Female', 'Male')) %>%
+  spread(func, value) %>%
+  ggplot(aes(y = sum, x = nu_ano_censo)) +
+  geom_bar(aes(fill = sex),
+           position = 'dodge', stat = 'identity') +
+  geom_smooth(aes(linetype = sex, fill = sex), 
+              col = 'black',
+              alpha = 0.3,
+              method = 'gam') +
+  theme_clean() +
+  scale_fill_ptol() +
+  scale_y_continuous(labels = scales::number_format(suffix = ' K', big.mark = '.', decimal.mark = ',', scale = 1e-3),
+                     breaks = seq(0, 3*1e6, by = 500000)) +
+  scale_x_continuous(breaks = seq(1995, 2021, by = 4))+
+  labs(fill = 'Sex',
+       linetype = 'Sex',
+       caption = 'Figure 1: Growth of new students around the years.') +
+  theme(plot.caption.position = "plot",
+        plot.caption = element_text(hjust = 0)) +
+  ylab('Total of new students') +
+  xlab('')
 ```
+
+### Table 1
+
+```{r, warning=FALSE}
+ts_hm1 %>%
+  mutate(variable = ifelse(variable == 'qt_ing_fem', 'Female', 'Male')) %>%
+  select(Year = 1, Sex = 2, 3:14) %>%
+  kbl(caption = 'Table 1: Descriptive statistics for new students around the years.', align = 'c', digits = 2) %>%
+  kable_paper('hover', position = 'left', full_width = F)
+```
+
+:::
+
+Utilizamos à base de despesas do governo ([Fonte](https://portaldatransparencia.gov.br/download-de-dados/orcamento-despesa)) para testar a correlação entre o número o número total (Male + Female) de novos estudantes e orçamento do Ministério da Educação (MD) entre os anos de 2014 e 2021 - não conseguimos obter os orçamentos de anos anteriores. Utilizamos Modelos Aditivos Generalizados (GAM's) por serem mais flexíveis e devido às variáveis testadas não apresentarem uma curva de distribuição normal.
+
+Nosso modelo apresentou uma relação positiviva significativa entre o orçamento do MD e o número de alunos (p < 0.05).
 
 ```{r}
+ts_despesa_hm %>%
+  mutate(total_students = qt_ing_fem_sum + qt_ing_masc_sum,
+         budget = orcamento_realizado_r) %>%
+  gam(data = ., total_students ~ budget) %>%
+  summary()
+```
+
+# ETL
+
+## 1. Load data
+
+We create a lists of data frames for faster de creation of the data.
+
+```{r, echo=FALSE, eval=FALSE}
+file_paths <- fs::dir_ls("/home/fredvasconcelos/Documentos/educacao/alunos/2009_2021/")
+
+file_paths1 <- fs::dir_ls("/home/fredvasconcelos/Documentos/educacao/despesas/")
+
+```
+
+```{r, eval=FALSE}
 listed_df <- file_paths %>%
   map(function (path) {
     read.csv(path, sep = ';', encoding = 'latin1')
   }) %>%
   tibble() 
+
+listed_df <- file_paths1 %>%
+  map(function (path) {
+    read.csv(path, sep = ';', encoding = 'latin1', colClasses = 'character', dec = ',')
+  }) %>%
+  tibble() 
 ```
 
-## 3. Feature enginering
+## 2. Feature enginering
 
-The data frames don't have information about Regions and States of Brazil because. We get this information with the *IES CODE* in the **IES DATABASE**.
+The data frames don't have information about Regions and States of Brazil because. We get this information with the *IES CODE* in the **IES DATABASE**. We get a secondary data about the investment in education for test your correlation with other variables.
 
-```{r, echo=F}
+```{r, eval=FALSE}
 regions_states <- read.csv('/home/fredvasconcelos/Documentos/educacao/ies/ies_2021.CSV', sep = ';', encoding = 'latin1') %>%
-  select(CO_IES, NO_UF = NO_UF_IES, NO_REGIAO = NO_REGIAO_IES) %>%
+  select(CO_IES, NO_UF = NO_UF_IES, NO_REGIAO = NO_REGIAO_IES, SG_UF = SG_UF_IES) %>%
+  janitor::clean_names() %>%
+  mutate_at(c('no_regiao', 'no_uf'), ~ str_to_title(str_trim(abjutils::rm_accent(.)))) %>%
+  mutate(no_uf = str_replace_all(no_uf, c('De' = 'de', 'Do' = 'do', 'Grando' = 'Grande'))) 
+
+regions_states2 <- regions_states %>%
+  select(2:4) %>%
+  distinct()
+
+despesas <- listed_df %>%
+  unnest(cols = '.') %>%
   janitor::clean_names()
+
+```
+
+## 3. Cleaning and organize data frames
+
+Dataframes before 2009 have different structures, being necessary to reorganize and then merge.
+
+```{r, eval=FALSE}
+df_cursos1995 <- read.csv('/home/fredvasconcelos/Documentos/educacao/alunos/1995_2008/cursos_1995.CSV', sep = '|') %>%
+  janitor::clean_names() %>%
+  rowwise() %>%
+  mutate(qt_ing_fem = sum(qt_ingr_vest_femi_diurno, qt_ingr_outros_femi_diurno,
+                             qt_ingr_vest_femi_noturno, qt_ingr_outros_femi_noturno, na.rm = T),
+         qt_ing_masc = sum(qt_ingr_vest_masc_diurno, qt_ingr_outros_masc_diurno,
+                           qt_ingr_vest_masc_noturno, qt_ingr_outros_masc_noturno, na.rm = T)) %>%
+  ungroup() %>%
+  select(co_ies = mascara, nu_ano_censo = nr_ano, co_curso = cd_curso, no_regiao = no_regiao,
+         no_uf = no_uf, no_curso = no_curso, no_cine_rotulo = no_area_conhe, qt_ing_fem, qt_ing_masc) 
+
+df_cursos1996 <- read.csv('/home/fredvasconcelos/Documentos/educacao/alunos/1995_2008/cursos_1996.CSV', sep = '|') %>%
+  janitor::clean_names() %>%
+  rowwise() %>%
+  mutate(qt_ing_fem = sum(qt_ingr_vest_femi_diurno, qt_ingr_outros_femi_diurno,
+                             qt_ingr_vest_femi_noturno, qt_ingr_outros_femi_noturno, na.rm = T),
+         qt_ing_masc = sum(qt_ingr_vest_masc_diurno, qt_ingr_outros_masc_diurno,
+                           qt_ingr_vest_masc_noturno, qt_ingr_outros_masc_noturno, na.rm = T)) %>%
+  ungroup() %>%
+  select(co_ies = mascara, nu_ano_censo = nr_ano, co_curso = cd_curso, no_regiao = no_regiao,
+         no_uf = no_uf, no_curso = no_curso, no_cine_rotulo = no_area_conhe, qt_ing_fem, qt_ing_masc) %>%
+  na.omit() # the data.frame has some NA's values
+
+df_cursos1997 <- read.csv('/home/fredvasconcelos/Documentos/educacao/alunos/1995_2008/cursos_1997.CSV', sep = '|') %>%
+  janitor::clean_names() %>%
+  rowwise() %>%
+  mutate(qt_ing_fem = sum(qt_fem_mat_diurno, qt_fem_mat_not, na.rm = T),
+         qt_ing_masc = sum(qt_masc_mat_diurno, qt_masc_mat_not, na.rm = T)) %>%
+  ungroup() %>%
+  select(co_ies = mascara, nu_ano_censo = nr_ano, co_curso = cd_curso, sg_uf = sg_uf,
+         no_curso = no_curso, no_cine_rotulo = no_area_conhecimento, qt_ing_fem, qt_ing_masc) %>%
+  right_join(regions_states, by = c('co_ies', 'sg_uf'))
+
+df_cursos1998 <- read.csv('/home/fredvasconcelos/Documentos/educacao/alunos/1995_2008/cursos_1998.CSV', sep = '|', encoding = 'latin1') %>%
+  janitor::clean_names() %>%
+  rowwise() %>%
+  mutate(qt_ing_fem = sum(c0211, c0213, c0221, c0223, c0231, c0233, c0241, c0243, na.rm = T),
+         qt_ing_masc = sum(c0212, c0214, c0223, c0224, c0232, c0234, c0242, c0244, na.rm = T),
+         qt_ing_0_24 = sum(c0311, c0312, na.rm = T),
+         qt_ing_25_34 = sum(c0313, c0314, na.rm = T),
+         qt_ing_35_mais = sum(c0315, c0316, na.rm = T)) %>%
+  ungroup() %>%
+  select(co_ies = mascara, nu_ano_censo = ano, co_curso = co_curso, sg_uf = sg_uf,
+         no_curso = no_curso, no_cine_rotulo = no_area, qt_ing_fem, qt_ing_masc,
+         qt_ing_0_24, qt_ing_25_34, qt_ing_35_mais) %>%
+  left_join(regions_states2, by = c('sg_uf')) 
+
+df_cursos1999 <- read.csv('/home/fredvasconcelos/Documentos/educacao/alunos/1995_2008/cursos_1999.CSV', sep = '|', encoding = 'latin1') %>%
+  janitor::clean_names() %>%
+  rowwise() %>%
+  mutate(qt_ing_fem = sum(c0211, c0213, c0215, c0217, c0221, c0223, c0225, c0227, na.rm = T),
+         qt_ing_masc = sum(c0212, c0214, c0216, c0218, c0222, c0224, c0226, c0228, na.rm = T),
+         qt_ing_0_24 = sum(c0311, c0312, na.rm = T),
+         qt_ing_25_34 = sum(c0313, c0314, na.rm = T),
+         qt_ing_35_mais = sum(c0315, c0316, na.rm = T)) %>%
+  ungroup() %>%
+  select(co_ies = mascara, nu_ano_censo = ano, co_curso = co_curso, sg_uf = sg_uf,
+         no_curso = no_curso, no_cine_rotulo = no_area, qt_ing_fem, qt_ing_masc,
+         qt_ing_0_24, qt_ing_25_34, qt_ing_35_mais) %>%
+  left_join(regions_states2, by = c('sg_uf')) 
+
+df_cursos2000 <- read.csv('/home/fredvasconcelos/Documentos/educacao/alunos/1995_2008/cursos_2000.CSV', sep = '|', encoding = 'latin1') %>%
+  janitor::clean_names() %>%
+  rowwise() %>%
+  mutate(qt_ing_fem = sum(c0211, c0213, c0221, c0223, c0231, c0233, c0241, c0243, na.rm = T),
+         qt_ing_masc = sum(c0212, c0214, c0222, c0224, c0232, c0234, c0242, c0244, na.rm = T),
+         qt_ing_0_18 = sum(c09011, c09012),
+         qt_ing_19_24 = sum(c09021, c09022),
+         qt_ing_25_29 = sum(c09031, c09032),
+         qt_ing_30_34 = sum(c09041, c09042),
+         qt_ing_35_39 = sum(c09051, c09052),
+         qt_ing_40_44 = sum(c09061, c09062),
+         qt_ing_45_49 = sum(c09071, c09072),
+         qt_ing_50_54 = sum(c09081, c09082),
+         qt_ing_55_59 = sum(c09091, c09092),
+         qt_ing_60_64 = sum(c09101, c09102),
+         qt_ing_65_mais = sum(c09111, c09012)) %>%
+  ungroup() %>%
+  select(co_ies = mascara, nu_ano_censo = ano, co_curso = curso, sg_uf = sigla_uf_curso,
+         no_curso = nomedocurso, no_cine_rotulo = nomeareacurso, qt_ing_fem, qt_ing_masc,
+         qt_ing_0_18, qt_ing_19_24, qt_ing_25_29, qt_ing_30_34, qt_ing_35_39, qt_ing_40_44,
+         qt_ing_45_49, qt_ing_50_54, qt_ing_55_59, qt_ing_60_64, qt_ing_65_mais) %>%
+  left_join(regions_states2, by = c('sg_uf')) 
+
+df_cursos2001 <- read.csv('/home/fredvasconcelos/Documentos/educacao/alunos/1995_2008/cursos_2001.CSV', sep = '|', encoding = 'latin1') %>%
+  janitor::clean_names() %>%
+  rowwise() %>%
+  mutate(qt_ing_fem = sum(c72031, c72033, c72041, c72043, c72051, c72053, c72081, c72083, 
+                          c72091, c72093, c72101, c72103, c73031, c73033, c73041, c73043,
+                          c73051, c73053, c73081, c73083, c73091, c73093, c73101, c73103,
+                          c7409, c7410, c7413, c7415, c7417, c7419, c7429, c7431, c7433,
+                          c7435, c7437, c7439, c7509, c7511, c7513, c7515, c7517, c7519,
+                          c7529, c7531, c7533, c7535, c7537, c7539, c7609, c7611, c7613,
+                          c7615, c7617, c7619, c7629, c7631, c7633, c7635, c7637, c7639,
+                          na.rm = T),
+         qt_ing_masc = sum(c72032, c72034, c72042, c72044, c72052, c72054, c72082, c72084, 
+                           c72092, c72094, c72102, c72104, c73032, c73034, c73042, c73044,
+                           c73052, c73054, c73082, c73084, c73092, c73094, c73102, c73104,
+                           c7410, c7412, c7414, c7416, c7418, c7420, c7430, c7432, c7434,
+                           c7436, c7438, c7440, c7510, c7512, c7514, c7516, c7518, c7520,
+                           c7530, c7532, c7534, c7536, c7538, c7540, c7610, c7612, c7614,
+                           c7616, c7618, c7620, c7630, c7632, c7634, c7636, c7638, c7640,
+                           na.rm = T),
+         qt_ing_0_18 = sum(c09011, c09012, c09121, c09122),
+         qt_ing_19_24 = sum(c09021, c09022, c09131, c09132),
+         qt_ing_25_29 = sum(c09031, c09032, c09141, c09142),
+         qt_ing_30_34 = sum(c09041, c09042, c09151, c09152),
+         qt_ing_35_39 = sum(c09051, c09052, c09161, c09162),
+         qt_ing_40_44 = sum(c09061, c09062, c09171, c09172),
+         qt_ing_45_49 = sum(c09071, c09072, c09181, c09182),
+         qt_ing_50_54 = sum(c09081, c09082, c09191, c09192),
+         qt_ing_55_59 = sum(c09091, c09092, c09201, c09202),
+         qt_ing_60_64 = sum(c09101, c09102, c09211, c09212),
+         qt_ing_65_mais = sum(c09111, c09012, c09221, c09222)) %>%
+  ungroup() %>%
+  select(co_ies = mascara, nu_ano_censo = ano, co_curso = curso, sg_uf = sigla_uf_curso,
+         no_curso = nomedocurso, no_cine_rotulo = nomeareacurso, qt_ing_fem, qt_ing_masc,
+         qt_ing_0_18, qt_ing_19_24, qt_ing_25_29, qt_ing_30_34, qt_ing_35_39, qt_ing_40_44,
+         qt_ing_45_49, qt_ing_50_54, qt_ing_55_59, qt_ing_60_64, qt_ing_65_mais) %>%
+  left_join(regions_states2, by = c('sg_uf')) 
+
+df_cursos2002 <- read.csv('/home/fredvasconcelos/Documentos/educacao/alunos/1995_2008/cursos_2002.CSV', sep = '|', encoding = 'latin1') %>%
+  janitor::clean_names() %>%
+  rowwise() %>%
+  mutate(qt_ing_fem = sum(c72031, c72033, c72041, c72043, c72051, c72053, c72081, c72083, 
+                          c72091, c72093, c72101, c72103, c73031, c73033, c73041, c73043,
+                          c73051, c73053, c73081, c73083, c73091, c73093, c73101, c73103,
+                          c7409, c7410, c7413, c7415, c7417, c7419, c7429, c7431, c7433,
+                          c7435, c7437, c7439, c7509, c7511, c7513, c7515, c7517, c7519,
+                          c7529, c7531, c7533, c7535, c7537, c7539, c7609, c7611, c7613,
+                          c7615, c7617, c7619, c7629, c7631, c7633, c7635, c7637, c7639,
+                          na.rm = T),
+         qt_ing_masc = sum(c72032, c72034, c72042, c72044, c72052, c72054, c72082, c72084, 
+                           c72092, c72094, c72102, c72104, c73032, c73034, c73042, c73044,
+                           c73052, c73054, c73082, c73084, c73092, c73094, c73102, c73104,
+                           c7410, c7412, c7414, c7416, c7418, c7420, c7430, c7432, c7434,
+                           c7436, c7438, c7440, c7510, c7512, c7514, c7516, c7518, c7520,
+                           c7530, c7532, c7534, c7536, c7538, c7540, c7610, c7612, c7614,
+                           c7616, c7618, c7620, c7630, c7632, c7634, c7636, c7638, c7640,
+                           na.rm = T),
+         qt_ing_0_18 = sum(c09011, c09012, c09121, c09122),
+         qt_ing_19_24 = sum(c09021, c09022, c09131, c09132),
+         qt_ing_25_29 = sum(c09031, c09032, c09141, c09142),
+         qt_ing_30_34 = sum(c09041, c09042, c09151, c09152),
+         qt_ing_35_39 = sum(c09051, c09052, c09161, c09162),
+         qt_ing_40_44 = sum(c09061, c09062, c09171, c09172),
+         qt_ing_45_49 = sum(c09071, c09072, c09181, c09182),
+         qt_ing_50_54 = sum(c09081, c09082, c09191, c09192),
+         qt_ing_55_59 = sum(c09091, c09092, c09201, c09202),
+         qt_ing_60_64 = sum(c09101, c09102, c09211, c09212),
+         qt_ing_65_mais = sum(c09111, c09012, c09221, c09222)) %>%
+  mutate_if(is.numeric, replace_na, 0) %>%
+  ungroup() %>%
+  select(co_ies = mascara, nu_ano_censo = ano, co_curso = curso, sg_uf = sigla_uf_curso,
+         no_curso = nomedocurso, no_cine_rotulo = nomeareacurso, qt_ing_fem, qt_ing_masc,
+         qt_ing_0_18, qt_ing_19_24, qt_ing_25_29, qt_ing_30_34, qt_ing_35_39, qt_ing_40_44,
+         qt_ing_45_49, qt_ing_50_54, qt_ing_55_59, qt_ing_60_64, qt_ing_65_mais) %>%
+  left_join(regions_states2, by = c('sg_uf')) 
+
+df_cursos2003 <- read.csv('/home/fredvasconcelos/Documentos/educacao/alunos/1995_2008/cursos_2003.CSV', sep = '|', encoding = 'latin1') %>%
+  janitor::clean_names() %>%
+  rowwise() %>%
+  mutate(qt_ing_fem = sum(c72031, c72033, c72041, c72043, c72051, c72053, c72081, c72083, 
+                          c72091, c72093, c72101, c72103, c73031, c73033, c73041, c73043,
+                          c73051, c73053, c73081, c73083, c73091, c73093, c73101, c73103,
+                          c7409, c7410, c7413, c7415, c7417, c7419, c7429, c7431, c7433,
+                          c7435, c7437, c7439, c7509, c7511, c7513, c7515, c7517, c7519,
+                          c7529, c7531, c7533, c7535, c7537, c7539, c7609, c7611, c7613,
+                          c7615, c7617, c7619, c7629, c7631, c7633, c7635, c7637, c7639,
+                          na.rm = T),
+         qt_ing_masc = sum(c72032, c72034, c72042, c72044, c72052, c72054, c72082, c72084, 
+                           c72092, c72094, c72102, c72104, c73032, c73034, c73042, c73044,
+                           c73052, c73054, c73082, c73084, c73092, c73094, c73102, c73104,
+                           c7410, c7412, c7414, c7416, c7418, c7420, c7430, c7432, c7434,
+                           c7436, c7438, c7440, c7510, c7512, c7514, c7516, c7518, c7520,
+                           c7530, c7532, c7534, c7536, c7538, c7540, c7610, c7612, c7614,
+                           c7616, c7618, c7620, c7630, c7632, c7634, c7636, c7638, c7640,
+                           na.rm = T),
+         qt_ing_0_18 = sum(c09011, c09012, c09121, c09122),
+         qt_ing_19_24 = sum(c09021, c09022, c09131, c09132),
+         qt_ing_25_29 = sum(c09031, c09032, c09141, c09142),
+         qt_ing_30_34 = sum(c09041, c09042, c09151, c09152),
+         qt_ing_35_39 = sum(c09051, c09052, c09161, c09162),
+         qt_ing_40_44 = sum(c09061, c09062, c09171, c09172),
+         qt_ing_45_49 = sum(c09071, c09072, c09181, c09182),
+         qt_ing_50_54 = sum(c09081, c09082, c09191, c09192),
+         qt_ing_55_59 = sum(c09091, c09092, c09201, c09202),
+         qt_ing_60_64 = sum(c09101, c09102, c09211, c09212),
+         qt_ing_65_mais = sum(c09111, c09012, c09221, c09222)) %>%
+  mutate_if(is.numeric, replace_na, 0) %>%
+  ungroup() %>%
+  select(co_ies = mascara, nu_ano_censo = ano, co_curso = curso, sg_uf = sigla_uf_curso,
+         no_curso = nomedocurso, no_cine_rotulo = nomeareacurso, qt_ing_fem, qt_ing_masc,
+         qt_ing_0_18, qt_ing_19_24, qt_ing_25_29, qt_ing_30_34, qt_ing_35_39, qt_ing_40_44,
+         qt_ing_45_49, qt_ing_50_54, qt_ing_55_59, qt_ing_60_64, qt_ing_65_mais) %>%
+  left_join(regions_states2, by = c('sg_uf')) 
+
+df_cursos2004 <- read.csv('/home/fredvasconcelos/Documentos/educacao/alunos/1995_2008/cursos_2004.CSV', sep = '|', encoding = 'latin1') %>%
+  janitor::clean_names() %>%
+  rowwise() %>%
+  mutate(qt_ing_fem = sum(c72031, c72033, c72041, c72043, c72051, c72053, c72081, c72083, 
+                          c72091, c72093, c72101, c72103, c73031, c73033, c73041, c73043,
+                          c73051, c73053, c73081, c73083, c73091, c73093, c73101, c73103,
+                          c7409, c7410, c7413, c7415, c7417, c7419, c7429, c7431, c7433,
+                          c7435, c7437, c7439, c7509, c7511, c7513, c7515, c7517, c7519,
+                          c7529, c7531, c7533, c7535, c7537, c7539, c7609, c7611, c7613,
+                          c7615, c7617, c7619, c7629, c7631, c7633, c7635, c7637, c7639,
+                          na.rm = T),
+         qt_ing_masc = sum(c72032, c72034, c72042, c72044, c72052, c72054, c72082, c72084, 
+                           c72092, c72094, c72102, c72104, c73032, c73034, c73042, c73044,
+                           c73052, c73054, c73082, c73084, c73092, c73094, c73102, c73104,
+                           c7410, c7412, c7414, c7416, c7418, c7420, c7430, c7432, c7434,
+                           c7436, c7438, c7440, c7510, c7512, c7514, c7516, c7518, c7520,
+                           c7530, c7532, c7534, c7536, c7538, c7540, c7610, c7612, c7614,
+                           c7616, c7618, c7620, c7630, c7632, c7634, c7636, c7638, c7640,
+                           na.rm = T),
+         qt_ing_0_18 = sum(c09011, c09012, c09121, c09122),
+         qt_ing_19_24 = sum(c09021, c09022, c09131, c09132),
+         qt_ing_25_29 = sum(c09031, c09032, c09141, c09142),
+         qt_ing_30_34 = sum(c09041, c09042, c09151, c09152),
+         qt_ing_35_39 = sum(c09051, c09052, c09161, c09162),
+         qt_ing_40_44 = sum(c09061, c09062, c09171, c09172),
+         qt_ing_45_49 = sum(c09071, c09072, c09181, c09182),
+         qt_ing_50_54 = sum(c09081, c09082, c09191, c09192),
+         qt_ing_55_59 = sum(c09091, c09092, c09201, c09202),
+         qt_ing_60_64 = sum(c09101, c09102, c09211, c09212),
+         qt_ing_65_mais = sum(c09111, c09012, c09221, c09222)) %>%
+  mutate_if(is.numeric, replace_na, 0) %>%
+  ungroup() %>%
+  select(co_ies = mascara, nu_ano_censo = ano, co_curso = curso, sg_uf = sigla_uf_curso,
+         no_curso = nomedocurso, no_cine_rotulo = nomeareacurso, qt_ing_fem, qt_ing_masc,
+         qt_ing_0_18, qt_ing_19_24, qt_ing_25_29, qt_ing_30_34, qt_ing_35_39, qt_ing_40_44,
+         qt_ing_45_49, qt_ing_50_54, qt_ing_55_59, qt_ing_60_64, qt_ing_65_mais) %>%
+  left_join(regions_states2, by = c('sg_uf')) 
+
+df_cursos2005 <- read.csv('/home/fredvasconcelos/Documentos/educacao/alunos/1995_2008/cursos_2005.CSV', sep = '|', encoding = 'latin1') %>%
+  janitor::clean_names() %>%
+  rowwise() %>%
+  mutate(qt_ing_fem = sum(c72031, c72033, c72041, c72043, c72051, c72053, c72081, c72083, 
+                          c72091, c72093, c72101, c72103, c73031, c73033, c73041, c73043,
+                          c73051, c73053, c73081, c73083, c73091, c73093, c73101, c73103,
+                          c7409, c7410, c7413, c7415, c7417, c7419, c7429, c7431, c7433,
+                          c7435, c7437, c7439, c7509, c7511, c7513, c7515, c7517, c7519,
+                          c7529, c7531, c7533, c7535, c7537, c7539, c7609, c7611, c7613,
+                          c7615, c7617, c7619, c7629, c7631, c7633, c7635, c7637, c7639,
+                          na.rm = T),
+         qt_ing_masc = sum(c72032, c72034, c72042, c72044, c72052, c72054, c72082, c72084, 
+                           c72092, c72094, c72102, c72104, c73032, c73034, c73042, c73044,
+                           c73052, c73054, c73082, c73084, c73092, c73094, c73102, c73104,
+                           c7410, c7412, c7414, c7416, c7418, c7420, c7430, c7432, c7434,
+                           c7436, c7438, c7440, c7510, c7512, c7514, c7516, c7518, c7520,
+                           c7530, c7532, c7534, c7536, c7538, c7540, c7610, c7612, c7614,
+                           c7616, c7618, c7620, c7630, c7632, c7634, c7636, c7638, c7640,
+                           na.rm = T),
+         qt_ing_0_18 = sum(c09011, c09012, c09121, c09122),
+         qt_ing_19_24 = sum(c09021, c09022, c09131, c09132),
+         qt_ing_25_29 = sum(c09031, c09032, c09141, c09142),
+         qt_ing_30_34 = sum(c09041, c09042, c09151, c09152),
+         qt_ing_35_39 = sum(c09051, c09052, c09161, c09162),
+         qt_ing_40_44 = sum(c09061, c09062, c09171, c09172),
+         qt_ing_45_49 = sum(c09071, c09072, c09181, c09182),
+         qt_ing_50_54 = sum(c09081, c09082, c09191, c09192),
+         qt_ing_55_59 = sum(c09091, c09092, c09201, c09202),
+         qt_ing_60_64 = sum(c09101, c09102, c09211, c09212),
+         qt_ing_65_mais = sum(c09111, c09012, c09221, c09222)) %>%
+  mutate_if(is.numeric, replace_na, 0) %>%
+  ungroup() %>%
+  select(co_ies = mascara, nu_ano_censo = ano, co_curso = curso, sg_uf = sigla_uf_curso,
+         no_curso = nomedocurso, no_cine_rotulo = nomeareacurso, qt_ing_fem, qt_ing_masc,
+         qt_ing_0_18, qt_ing_19_24, qt_ing_25_29, qt_ing_30_34, qt_ing_35_39, qt_ing_40_44,
+         qt_ing_45_49, qt_ing_50_54, qt_ing_55_59, qt_ing_60_64, qt_ing_65_mais) %>%
+  left_join(regions_states2, by = c('sg_uf')) 
+
+df_cursos2006 <- read.csv('/home/fredvasconcelos/Documentos/educacao/alunos/1995_2008/cursos_2006.CSV', sep = '|', encoding = 'latin1') %>%
+  janitor::clean_names() %>%
+  rowwise() %>%
+  mutate(qt_ing_fem = sum(c72031, c72033, c72041, c72043, c72051, c72053, c72081, c72083, 
+                          c72091, c72093, c72101, c72103, c73031, c73033, c73041, c73043,
+                          c73051, c73053, c73081, c73083, c73091, c73093, c73101, c73103,
+                          c7409, c7410, c7413, c7415, c7417, c7419, c7429, c7431, c7433,
+                          c7435, c7437, c7439, c7509, c7511, c7513, c7515, c7517, c7519,
+                          c7529, c7531, c7533, c7535, c7537, c7539, c7609, c7611, c7613,
+                          c7615, c7617, c7619, c7629, c7631, c7633, c7635, c7637, c7639,
+                          na.rm = T),
+         qt_ing_masc = sum(c72032, c72034, c72042, c72044, c72052, c72054, c72082, c72084, 
+                           c72092, c72094, c72102, c72104, c73032, c73034, c73042, c73044,
+                           c73052, c73054, c73082, c73084, c73092, c73094, c73102, c73104,
+                           c7410, c7412, c7414, c7416, c7418, c7420, c7430, c7432, c7434,
+                           c7436, c7438, c7440, c7510, c7512, c7514, c7516, c7518, c7520,
+                           c7530, c7532, c7534, c7536, c7538, c7540, c7610, c7612, c7614,
+                           c7616, c7618, c7620, c7630, c7632, c7634, c7636, c7638, c7640,
+                           na.rm = T),
+         qt_ing_0_18 = sum(c09011, c09012, c09121, c09122),
+         qt_ing_19_24 = sum(c09021, c09022, c09131, c09132),
+         qt_ing_25_29 = sum(c09031, c09032, c09141, c09142),
+         qt_ing_30_34 = sum(c09041, c09042, c09151, c09152),
+         qt_ing_35_39 = sum(c09051, c09052, c09161, c09162),
+         qt_ing_40_44 = sum(c09061, c09062, c09171, c09172),
+         qt_ing_45_49 = sum(c09071, c09072, c09181, c09182),
+         qt_ing_50_54 = sum(c09081, c09082, c09191, c09192),
+         qt_ing_55_59 = sum(c09091, c09092, c09201, c09202),
+         qt_ing_60_64 = sum(c09101, c09102, c09211, c09212),
+         qt_ing_65_mais = sum(c09111, c09012, c09221, c09222)) %>%
+  mutate_if(is.numeric, replace_na, 0) %>%
+  ungroup() %>%
+  select(co_ies = mascara, nu_ano_censo = ano, co_curso = curso, sg_uf = sigla_uf_curso,
+         no_curso = nomedocurso, no_cine_rotulo = nomeareacurso, qt_ing_fem, qt_ing_masc,
+         qt_ing_0_18, qt_ing_19_24, qt_ing_25_29, qt_ing_30_34, qt_ing_35_39, qt_ing_40_44,
+         qt_ing_45_49, qt_ing_50_54, qt_ing_55_59, qt_ing_60_64, qt_ing_65_mais) %>%
+  left_join(regions_states2, by = c('sg_uf')) 
+
+df_cursos2007 <- read.csv('/home/fredvasconcelos/Documentos/educacao/alunos/1995_2008/cursos_2007.CSV', sep = '|', encoding = 'latin1') %>%
+  janitor::clean_names() %>%
+  rowwise() %>%
+  mutate(qt_ing_fem = sum(c72031, c72033, c72041, c72043, c72051, c72053, c72081, c72083, 
+                          c72091, c72093, c72101, c72103, c73031, c73033, c73041, c73043,
+                          c73051, c73053, c73081, c73083, c73091, c73093, c73101, c73103,
+                          c7409, c7410, c7413, c7415, c7417, c7419, c7429, c7431, c7433,
+                          c7435, c7437, c7439, c7509, c7511, c7513, c7515, c7517, c7519,
+                          c7529, c7531, c7533, c7535, c7537, c7539, c7609, c7611, c7613,
+                          c7615, c7617, c7619, c7629, c7631, c7633, c7635, c7637, c7639,
+                          na.rm = T),
+         qt_ing_masc = sum(c72032, c72034, c72042, c72044, c72052, c72054, c72082, c72084, 
+                           c72092, c72094, c72102, c72104, c73032, c73034, c73042, c73044,
+                           c73052, c73054, c73082, c73084, c73092, c73094, c73102, c73104,
+                           c7410, c7412, c7414, c7416, c7418, c7420, c7430, c7432, c7434,
+                           c7436, c7438, c7440, c7510, c7512, c7514, c7516, c7518, c7520,
+                           c7530, c7532, c7534, c7536, c7538, c7540, c7610, c7612, c7614,
+                           c7616, c7618, c7620, c7630, c7632, c7634, c7636, c7638, c7640,
+                           na.rm = T),
+         qt_ing_0_18 = sum(c09011, c09012, c09121, c09122),
+         qt_ing_19_24 = sum(c09021, c09022, c09131, c09132),
+         qt_ing_25_29 = sum(c09031, c09032, c09141, c09142),
+         qt_ing_30_34 = sum(c09041, c09042, c09151, c09152),
+         qt_ing_35_39 = sum(c09051, c09052, c09161, c09162),
+         qt_ing_40_44 = sum(c09061, c09062, c09171, c09172),
+         qt_ing_45_49 = sum(c09071, c09072, c09181, c09182),
+         qt_ing_50_54 = sum(c09081, c09082, c09191, c09192),
+         qt_ing_55_59 = sum(c09091, c09092, c09201, c09202),
+         qt_ing_60_64 = sum(c09101, c09102, c09211, c09212),
+         qt_ing_65_mais = sum(c09111, c09012, c09221, c09222)) %>%
+  mutate_if(is.numeric, replace_na, 0) %>%
+  ungroup() %>%
+  select(co_ies = mascara, nu_ano_censo = ano, co_curso = curso, sg_uf = sigla_uf,
+         no_curso = nome_curso, no_cine_rotulo = nomeareacurso, qt_ing_fem, qt_ing_masc,
+         qt_ing_0_18, qt_ing_19_24, qt_ing_25_29, qt_ing_30_34, qt_ing_35_39, qt_ing_40_44,
+         qt_ing_45_49, qt_ing_50_54, qt_ing_55_59, qt_ing_60_64, qt_ing_65_mais) %>%
+  left_join(regions_states2, by = c('sg_uf')) 
+
+df_cursos2008 <- read.csv('/home/fredvasconcelos/Documentos/educacao/alunos/1995_2008/cursos_2008.CSV', sep = '|', encoding = 'latin1') %>%
+  janitor::clean_names() %>%
+  rowwise() %>%
+  mutate(qt_ing_fem = sum(c72031, c72033, c72041, c72043, c72051, c72053, c72081, c72083, 
+                          c72091, c72093, c72101, c72103, c73031, c73033, c73041, c73043,
+                          c73051, c73053, c73081, c73083, c73091, c73093, c73101, c73103,
+                          c7409, c7410, c7413, c7415, c7417, c7419, c7429, c7431, c7433,
+                          c7435, c7437, c7439, c7509, c7511, c7513, c7515, c7517, c7519,
+                          c7529, c7531, c7533, c7535, c7537, c7539, c7609, c7611, c7613,
+                          c7615, c7617, c7619, c7629, c7631, c7633, c7635, c7637, c7639,
+                          na.rm = T),
+         qt_ing_masc = sum(c72032, c72034, c72042, c72044, c72052, c72054, c72082, c72084, 
+                           c72092, c72094, c72102, c72104, c73032, c73034, c73042, c73044,
+                           c73052, c73054, c73082, c73084, c73092, c73094, c73102, c73104,
+                           c7410, c7412, c7414, c7416, c7418, c7420, c7430, c7432, c7434,
+                           c7436, c7438, c7440, c7510, c7512, c7514, c7516, c7518, c7520,
+                           c7530, c7532, c7534, c7536, c7538, c7540, c7610, c7612, c7614,
+                           c7616, c7618, c7620, c7630, c7632, c7634, c7636, c7638, c7640,
+                           na.rm = T),
+         qt_ing_0_18 = sum(c09011, c09012, c09121, c09122),
+         qt_ing_19_24 = sum(c09021, c09022, c09131, c09132),
+         qt_ing_25_29 = sum(c09031, c09032, c09141, c09142),
+         qt_ing_30_34 = sum(c09041, c09042, c09151, c09152),
+         qt_ing_35_39 = sum(c09051, c09052, c09161, c09162),
+         qt_ing_40_44 = sum(c09061, c09062, c09171, c09172),
+         qt_ing_45_49 = sum(c09071, c09072, c09181, c09182),
+         qt_ing_50_54 = sum(c09081, c09082, c09191, c09192),
+         qt_ing_55_59 = sum(c09091, c09092, c09201, c09202),
+         qt_ing_60_64 = sum(c09101, c09102, c09211, c09212),
+         qt_ing_65_mais = sum(c09111, c09012, c09221, c09222)) %>%
+  mutate_if(is.numeric, replace_na, 0) %>%
+  ungroup() %>%
+  select(co_ies = ies, nu_ano_censo = ano, co_curso = curso, sg_uf = sigla_uf,
+         no_curso = nome_curso, no_cine_rotulo = nomeareacurso, qt_ing_fem, qt_ing_masc,
+         qt_ing_0_18, qt_ing_19_24, qt_ing_25_29, qt_ing_30_34, qt_ing_35_39, qt_ing_40_44,
+         qt_ing_45_49, qt_ing_50_54, qt_ing_55_59, qt_ing_60_64, qt_ing_65_mais) %>%
+  left_join(regions_states2, by = c('sg_uf') ) 
+
+```
+
+```{r, message=FALSE, eval=FALSE}
+# merge all data frames before 2009
+
+merged_cursos_2008 <- list(df_cursos1995, df_cursos1996, df_cursos1997, df_cursos1998,
+                           df_cursos1999, df_cursos2000, df_cursos2001, df_cursos2002, 
+                           df_cursos2003, df_cursos2004, df_cursos2005, df_cursos2006,
+                           df_cursos2007, df_cursos2008) %>% reduce(full_join)
+
+
+merged_cursos_2021 <- listed_df %>%
+  unnest(cols = '.') %>%
+  janitor::clean_names()
+```
+
+### 3.1 Check names of States and Regions
+
+The names is unequal
+
+```{r}
+merged_cursos_2008 %>%
+  select(no_regiao, no_uf) %>%
+  distinct() %>%
+  knitr::kable()
+```
+
+### 3.2 Correction names of States and Regions
+
+```{r, eval=FALSE}
+merged_cursos_2008 <- merged_cursos_2008 %>%
+  mutate_at(c('no_regiao', 'no_uf'), ~ str_to_title(str_trim(abjutils::rm_accent(.)))) %>%
+  mutate(no_uf = str_replace_all(no_uf, c('De' = 'de', 'Do' = 'do', 'Grando' = 'Grande'))) 
+
+merged_cursos_2021 <- merged_cursos_2021 %>%
+  mutate_at(c('no_regiao', 'no_uf'), ~ str_to_title(str_trim(abjutils::rm_accent(.)))) %>%
+  mutate(no_uf = str_replace_all(no_uf, c('De' = 'de', 'Do' = 'do'))) 
+```
+
+### 3.3 Replace NA's in numeric columns
+
+```{r, eval=FALSE}
+merged_cursos_2008 <- merged_cursos_2008 %>%
+  mutate_if(is.numeric, replace_na, 0)
+```
+
+```{r}
+head(merged_cursos_2008)
+```
+
+### 3.4 Remove erroneous data
+
+```{r, eval=FALSE}
+merged_cursos_2008 <- merged_cursos_2008 %>%
+  filter(nu_ano_censo != 0)
+```
+
+```{r,  include=FALSE}
+# save data.frames as RData
+#save.image('/home/fredvasconcelos/Documentos/educacao/cursos_data.RData')
+#save(list = c('regions_states', 'regions_states2', 'merged_cursos_2008', 'merged_cursos_2021'), file = '/home/fredvasconcelos/Documentos/educacao/cursos_data.RData')
+
 ```
 
 ## 4. View data frame structure
 
-```{r}
-listed_df %>%
-  unnest(cols = '.') %>%
-  head()
-```
+::: panel-tabset
 
-## 5. Describe variables
+### 1995 ~ 2008
 
 ```{r}
-listed_df %>%
-  unnest(cols = '.') %>%
+merged_cursos_2008 %>%
   skimr::skim()
 ```
 
-## 6. Create new data frames
-
-### 6.1. Students profile
+### 2009 ~ 2021
 
 ```{r}
-students <- listed_df %>%
-  unnest(cols = '.') %>% # unlist and merge data.frames
-  janitor::clean_names() %>%
-  select(co_ies, nu_ano_censo, no_regiao, no_uf, starts_with('qt_in')) %>%
-  right_join(regions_states, by = c('co_ies', 'no_regiao', 'no_uf')) %>%
-  group_by(nu_ano_censo, no_regiao, no_uf) %>%
-  summarise_all(sum, na.rm = T) %>%
-  ungroup()
+merged_cursos_2021 %>%
+  skimr::skim()
 ```
 
-### 6.2. Statistics tests
+:::
+  
+## 5. Create new data frames
+  
+### 5.1. Students profile
+  
+Due to the difference in the variables contained in each data.frame, we will analyze them separately
+
+```{r, eval=FALSE}
+# 1995 ~ 2008
+students_2008 <- merged_cursos_2008 %>%
+  select(nu_ano_censo, no_regiao, no_uf, starts_with('qt_ing')) %>%
+  group_by(nu_ano_censo, no_regiao, no_uf) %>%
+  summarise_all(sum, na.rm = T) %>%
+  ungroup() %>%
+  mutate(data = zoo::as.yearmon(nu_ano_censo))
+
+# 2009 ~ 2021
+students_2021 <- merged_cursos_2021 %>%
+  mutate(no_uf = ifelse(no_uf == '', NA, no_uf),
+         no_regiao = ifelse(no_regiao == '', NA, no_regiao)) %>%
+  left_join(regions_states, by = c('co_ies', 'no_regiao', 'no_uf', 'sg_uf')) %>%
+  select(nu_ano_censo, no_regiao, no_uf, starts_with('qt_ing')) %>%
+  group_by(nu_ano_censo, no_regiao, no_uf) %>%
+  summarise_all(sum, na.rm = T) %>%
+  ungroup() %>%
+  mutate(data = zoo::as.yearmon(nu_ano_censo))
+
+```
+
+::: panel-tabset
+#### 1995 ~ 2008
 
 ```{r}
+head(students_2008) %>%
+  knitr::kable()
+```
+
+#### 2008 ~ 2021
+
+```{r}
+head(students_2021) %>%
+  knitr::kable()
+```
+
+```{r, message=FALSE, warning=FALSE, eval=FALSE}
+students_2008_summary_stats_hm <- merged_cursos_2008 %>%
+  select(nu_ano_censo, no_regiao, no_uf, qt_ing_fem, qt_ing_masc) %>%
+  group_by(nu_ano_censo) %>%
+  get_summary_stats() %>%
+  mutate(data = zoo::as.yearmon(nu_ano_censo))
+
+students_2021_summary_stats_hm <- merged_cursos_2021 %>%
+  mutate(no_uf = ifelse(no_uf == '', NA, no_uf),
+         no_regiao = ifelse(no_regiao == '', NA, no_regiao)) %>%
+  left_join(regions_states, by = c('co_ies', 'no_regiao', 'no_uf', 'sg_uf')) %>%
+  select(nu_ano_censo, no_regiao, no_uf, qt_ing_fem, qt_ing_masc) %>%
+  group_by(nu_ano_censo) %>%
+  get_summary_stats() %>%
+  mutate(data = zoo::as.yearmon(nu_ano_censo))
+
+```
+
+```{r, message=FALSE, eval=FALSE}
+ts_hm <- students_2008 %>%
+  full_join(students_2021) %>%
+  select(data, nu_ano_censo, qt_ing_fem, qt_ing_masc) %>%
+  group_by(nu_ano_censo, data) %>%
+  summarise_if(is.numeric, c('sum', 'mean', 'sd', 'se'))
+
+gather('var', 'value', 3:4) %>%
+  mutate(var = ifelse(var == 'qt_ing_fem', 'Female', 'Male'))
+
+ts_hm1 <- students_2008_summary_stats_hm %>%
+  full_join(students_2021_summary_stats_hm) %>%
+  mutate(var = ifelse(variable == 'qt_ing_fem', 'Female', 'Male'))
+```
+
+```{r, eval=FALSE}
+ts_despesa <- despesas %>%
+  filter(codigo_orgao_superior == '26000') %>% # codigo da verda do mninistério da educação
+  select(ano = exercicio, starts_with('orca')) %>%
+  mutate(across(2:5, ~str_replace_all(., ',', '.'))) %>%
+  hablar::convert(hablar::num(2:5)) %>%
+  group_by(ano) %>%
+  summarise_all(sum) 
+
+ts_despesa_hm <- ts_hm %>%
+  mutate(ano = as.character(nu_ano_censo)) %>%
+  inner_join(ts_despesa, by = 'ano')
+```
+
+:::
+  
+### 5.2 Statistics tests
+  
+```{r, eval=FALSE}
 stats_df <- students %>%
   mutate(data = zoo::as.yearmon(nu_ano_censo)) %>%
   group_by(data, no_regiao, no_uf) %>%
@@ -112,9 +742,9 @@ stats_df <- students %>%
   ungroup()
 ```
 
-### 6.3. Names for linear model table
+### 5.3 Names for linear model table
 
-```{r}
+```{r, eval=FALSE}
 labels_table_model <- c(`(Intercept)` = 'Intercept',
                         `as.factor(var)qt_ing_fem` = 'Sex (Female)',
                         `as.factor(var)qt_ing_masc` = 'Sex (Male)',
@@ -182,12 +812,12 @@ labels_table_model <- c(`(Intercept)` = 'Intercept',
                         `as.factor(no_uf)Rondônia` = 'State (Rondônia)',
                         `as.factor(no_uf)Roraima` = 'State (Roraima)',
                         `as.factor(no_uf)Tocantins` = 'State (Tocantins)'
-                        )
+)
 ```
 
-### 6.4. Cluster - Region and Sex
+### 5.4 Cluster - Region and Sex
 
-```{r}
+```{r, eval=FALSE}
 cluster_regiao_sex <- stats_df %>%
   pivot_wider(names_from = var, values_from = value) %>%
   group_by(no_regiao) %>%
@@ -201,9 +831,9 @@ cluster_regiao_sex <- scale(cluster_regiao_sex[,2:3])
 rownames(cluster_regiao_sex) <- names_cluster_regiao_sex
 ```
 
-### 6.5. Cluster - States and Sex
+### 5.5 Cluster - States and Sex
 
-```{r}
+```{r, eval=FALSE}
 cluster_uf_sex <- stats_df %>%
   pivot_wider(names_from = var, values_from = value) %>%
   group_by(no_uf) %>%
@@ -218,9 +848,9 @@ cluster_uf_sex <- scale(cluster_uf_sex[,2:3])
 rownames(cluster_uf_sex) <- names_cluster_uf_sex
 ```
 
-### 6.6. Cluster - Region and Ethnic group
+### 5.6 Cluster - Region and Ethnic group
 
-```{r}
+```{r, eval=FALSE}
 cluster_regiao_ethnic <- stats_df %>%
   pivot_wider(names_from = var, values_from = value) %>%
   group_by(no_regiao) %>%
@@ -240,30 +870,20 @@ cluster_regiao_ethnic <- scale(cluster_regiao_ethnic[,2:6])
 rownames(cluster_regiao_ethnic) <- names_cluster_regiao_ethnic
 ```
 
-### 6.7. Cluster - States and ethnic group
+### 5.7 Cluster - States and ethnic group
 
-````{r}
-cluster_uf_ethnic <- stats_df %>%
-  pivot_wider(names_from = var, values_from = value) %>%
-  group_by(no_uf) %>%
-  summarise_if(is.numeric, sum) %>%
-  select(no_uf, 
-         White = qt_ing_branca, 
-         Black = qt_ing_preta,
-         Brown = qt_ing_parda,
-         Asian = qt_ing_amarela,
-         Not_declared = qt_ing_cornd) %>%
-  ungroup()
+```{r, eval=FALSE}
+cluster_uf_ethnic <- stats_df %\>% pivot_wider(names_from =
+                                                 var, values_from = value) %\>% group_by(no_uf) %\>%
+  summarise_if(is.numeric, sum) %\>% select(no_uf, White = qt_ing_branca,
+                                            Black = qt_ing_preta, Brown = qt_ing_parda, Asian = qt_ing_amarela,
+                                            Not_declared = qt_ing_cornd) %\>% ungroup()
 
 names_cluster_uf_ethnic <- cluster_uf_ethnic$no_uf
 
 cluster_uf_ethnic <- scale(cluster_uf_ethnic[,2:6])
 
 rownames(cluster_uf_ethnic) <- names_cluster_uf_ethnic
+
 ```
-
-:::
-
-
-
 

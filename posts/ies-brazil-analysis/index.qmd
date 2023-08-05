@@ -103,8 +103,8 @@ students_2008 %>%
   rename(Sex = 'variable') %>%
   kbl(caption = 'Table 1: Descriptive statistics for new students by sex.', align = 'c', digits = 2) %>%
   kable_paper('basic', position = 'left', full_width = F) %>%
-  column_spec(1:14, background = 'white', color = 'black') %>%
-  row_spec(1, background = 'white', color = 'black')
+  column_spec(1:13, background = 'white', color = 'black') %>%
+  row_spec(0, background = 'white', color = 'black')
 
 ```
 
@@ -175,8 +175,8 @@ students_2008 %>%
   mutate_if(is.numeric, scales::number_format(big.mark = ',')) %>%
   kbl(caption = 'Table 2: Descriptive statistics for new students by Region.', align = 'c', digits = 2) %>%
   kable_paper('basic', position = 'left', full_width = F) %>%
-  column_spec(1:14, background = 'white')
-
+  column_spec(1:14, background = 'white', color = 'black') %>%
+  row_spec(0, background = 'white', color = 'black')
 ```
 
 :::
@@ -246,8 +246,8 @@ students_2008 %>%
   mutate_if(is.numeric, scales::number_format(big.mark = ',')) %>%
   kbl(caption = 'Table 3: Descriptive statistics for new students by State.', align = 'c', digits = 2) %>%
   kable_paper('basic', position = 'left', full_width = F) %>%
-  column_spec(1:14, background = 'white') %>%
-  row_spec(1, background = 'white', color = 'black')
+  column_spec(1:14, background = 'white', color = 'black') %>%
+  row_spec(0, background = 'white', color = 'black')
 
 ```
 
@@ -319,7 +319,7 @@ students_2008 %>%
   facet_wrap( ~ var, scales = 'free_y') +
   labs(fill = 'Sex',
        linetype = 'Sex',
-       caption = "Figure 4: Growth of new students by age. The red-dashed lines represents the economic crises (2008-09); black-dashed the political has culminating on Dilma Roussef's impeachment (2014-16); and the red-solid the COVID-19 pandemic.") +
+       caption = "Figure 5: Growth of new students by age. The red-dashed lines represents the economic crises (2008-09); black-dashed the political has culminating on Dilma Roussef's impeachment (2014-16); and the red-solid the COVID-19 pandemic.") +
   theme(plot.caption.position = "plot",
         plot.caption = element_text(hjust = 0)) +
   ylab('Total of new students') +
@@ -328,7 +328,165 @@ students_2008 %>%
 
 ```
 
+### Table 4
+
+```{r}
+#| code-fold: true
+
+students_2008 %>%
+  select(nu_ano_censo, 
+         qt_ing_0_17 = qt_ing_0_18, 
+         qt_ing_18_24 = qt_ing_19_24, 
+         qt_ing_25_29, 
+         qt_ing_30_34, 
+         qt_ing_35_39,
+         qt_ing_40_44, qt_ing_45_49, 
+         qt_ing_55_59, qt_ing_50_54,
+         qt_ing_60_64, qt_ing_65_mais) %>%
+  mutate(qt_ing_40_49 =  qt_ing_40_44 + qt_ing_45_49,
+         qt_ing_50_59 = qt_ing_55_59 + qt_ing_50_54,
+         qt_ing_60_mais = qt_ing_60_64 + qt_ing_65_mais) %>%
+  select(nu_ano_censo, qt_ing_0_17, qt_ing_18_24, qt_ing_25_29, qt_ing_30_34, 
+         qt_ing_35_39, qt_ing_40_49, qt_ing_50_59, qt_ing_60_mais) %>%
+  filter(nu_ano_censo > 1999) %>%
+  full_join(students_2021) %>%
+  select(nu_ano_censo, qt_ing_0_17, qt_ing_18_24, qt_ing_25_29, qt_ing_30_34, 
+         qt_ing_35_39, qt_ing_40_49, qt_ing_50_59, qt_ing_60_mais) %>%
+  group_by(nu_ano_censo) %>%
+  summarise_if(is.numeric, sum, na.rm = T) %>% 
+  get_summary_stats() %>%
+  filter(variable != 'nu_ano_censo') %>%
+  mutate(variable = case_when(variable == 'qt_ing_0_17' ~ '<18',
+                         variable == 'qt_ing_18_24' ~ '18~24',
+                         variable == 'qt_ing_25_29' ~ '25~29',
+                         variable == 'qt_ing_30_34' ~ '30~34', 
+                         variable == 'qt_ing_35_39' ~ '35~39', 
+                         variable == 'qt_ing_40_49' ~ '40~49',
+                         variable == 'qt_ing_50_59' ~ '50~59',
+                         variable == 'qt_ing_60_mais' ~ '>60')) %>%
+  rename(Age = 'variable') %>%
+  mutate_if(is.numeric, scales::number_format(big.mark = ',')) %>%
+  kbl(caption = 'Table 4: Descriptive statistics for new students by age.', align = 'l', digits = 2) %>%
+  kable_paper('basic', position = 'left', full_width = F) %>%
+  column_spec(1:13, background = 'white', color = 'black') %>%
+  row_spec(0, background = 'white', color = 'black')
+```
+
 :::
+
+## 3.5 Time Series - Age of new students by Region
+
+::: panel-tabset
+
+### Figure 5
+
+```{r, message=FALSE, error=FALSE, fig.dim=c(16,12), warning=FALSE}
+#| code-fold: true
+
+students_2008 %>%
+  select(nu_ano_censo, no_regiao,
+         qt_ing_0_17 = qt_ing_0_18, 
+         qt_ing_18_24 = qt_ing_19_24, 
+         qt_ing_25_29, 
+         qt_ing_30_34, 
+         qt_ing_35_39,
+         qt_ing_40_44, qt_ing_45_49, 
+         qt_ing_55_59, qt_ing_50_54,
+         qt_ing_60_64, qt_ing_65_mais) %>%
+  mutate(qt_ing_40_49 =  qt_ing_40_44 + qt_ing_45_49,
+         qt_ing_50_59 = qt_ing_55_59 + qt_ing_50_54,
+         qt_ing_60_mais = qt_ing_60_64 + qt_ing_65_mais) %>%
+  select(nu_ano_censo, no_regiao, qt_ing_0_17, qt_ing_18_24, qt_ing_25_29, qt_ing_30_34, 
+         qt_ing_35_39, qt_ing_40_49, qt_ing_50_59, qt_ing_60_mais) %>%
+  filter(nu_ano_censo > 1999) %>%
+  full_join(students_2021) %>%
+  select(nu_ano_censo, no_regiao, qt_ing_0_17, qt_ing_18_24, qt_ing_25_29, qt_ing_30_34, 
+         qt_ing_35_39, qt_ing_40_49, qt_ing_50_59, qt_ing_60_mais) %>%
+  group_by(nu_ano_censo, no_regiao) %>%
+  summarise_if(is.numeric, sum, na.rm = T) %>%
+  gather('var', 'value', 3:10) %>%
+  mutate(var = case_when(var == 'qt_ing_0_17' ~ '<18',
+                         var == 'qt_ing_18_24' ~ '18~24',
+                         var == 'qt_ing_25_29' ~ '25~29',
+                         var == 'qt_ing_30_34' ~ '30~34', 
+                         var == 'qt_ing_35_39' ~ '35~39', 
+                         var == 'qt_ing_40_49' ~ '40~49',
+                         var == 'qt_ing_50_59' ~ '50~59',
+                         var == 'qt_ing_60_mais' ~ '>60'),
+         var = fct_relevel(as.factor(var), '<18', '18~24', '25~29',
+                           '30~34', '35~39', '40~49', 
+                           '50~59', '>60'),
+         var = fct_relevel(as.factor(var), '<18', '18~24', '25~29',
+                           '30~34', '35~39', '40~49', 
+                           '50~59', '>60')) %>%
+  na.omit() %>%
+  ggplot(aes(x = nu_ano_censo, 
+             y = value,
+             linetype = var,
+             fill = var)) +
+  geom_bar(stat = 'identity', position = 'dodge') +
+  geom_smooth(method = 'loess', col = 'black') +
+  ggthemes::scale_fill_ptol() +
+  ggthemes::theme_clean() +
+  facet_grid(var ~ no_regiao, scales = 'free_y') +
+  labs(fill = 'Age',
+       linetype = 'Age',
+       caption = "Figure 6: Growth of new students by age and Region.") +
+  theme(plot.caption.position = "plot",
+        plot.caption = element_text(hjust = 0)) +
+  ylab('Total of new students') +
+  xlab('') +
+  scale_y_continuous(labels = scales::label_number(suffix = "K", scale = 1e-3, big.mark = '.'))
+
+```
+
+### Table 5
+
+```{r}
+#| code-fold: true
+
+students_2008 %>%
+  select(nu_ano_censo, 
+         qt_ing_0_17 = qt_ing_0_18, 
+         qt_ing_18_24 = qt_ing_19_24, 
+         qt_ing_25_29, 
+         qt_ing_30_34, 
+         qt_ing_35_39,
+         qt_ing_40_44, qt_ing_45_49, 
+         qt_ing_55_59, qt_ing_50_54,
+         qt_ing_60_64, qt_ing_65_mais) %>%
+  mutate(qt_ing_40_49 =  qt_ing_40_44 + qt_ing_45_49,
+         qt_ing_50_59 = qt_ing_55_59 + qt_ing_50_54,
+         qt_ing_60_mais = qt_ing_60_64 + qt_ing_65_mais) %>%
+  select(nu_ano_censo, qt_ing_0_17, qt_ing_18_24, qt_ing_25_29, qt_ing_30_34, 
+         qt_ing_35_39, qt_ing_40_49, qt_ing_50_59, qt_ing_60_mais) %>%
+  filter(nu_ano_censo > 1999) %>%
+  full_join(students_2021) %>%
+  select(nu_ano_censo, qt_ing_0_17, qt_ing_18_24, qt_ing_25_29, qt_ing_30_34, 
+         qt_ing_35_39, qt_ing_40_49, qt_ing_50_59, qt_ing_60_mais) %>%
+  group_by(nu_ano_censo) %>%
+  summarise_if(is.numeric, sum, na.rm = T) %>% 
+  get_summary_stats() %>%
+  filter(variable != 'nu_ano_censo') %>%
+  mutate(variable = case_when(variable == 'qt_ing_0_17' ~ '<18',
+                         variable == 'qt_ing_18_24' ~ '18~24',
+                         variable == 'qt_ing_25_29' ~ '25~29',
+                         variable == 'qt_ing_30_34' ~ '30~34', 
+                         variable == 'qt_ing_35_39' ~ '35~39', 
+                         variable == 'qt_ing_40_49' ~ '40~49',
+                         variable == 'qt_ing_50_59' ~ '50~59',
+                         variable == 'qt_ing_60_mais' ~ '>60')) %>%
+  rename(Age = 'variable') %>%
+  mutate_if(is.numeric, scales::number_format(big.mark = ',')) %>%
+  kbl(caption = 'Table 4: Descriptive statistics for new students by age.', align = 'l', digits = 2) %>%
+  kable_paper('basic', position = 'left', full_width = F) %>%
+  column_spec(1:13, background = 'white', color = 'black') %>%
+  row_spec(0, background = 'white', color = 'black')
+```
+
+:::
+
+
 
 
 # 4. Models

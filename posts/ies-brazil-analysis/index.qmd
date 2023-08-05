@@ -299,17 +299,19 @@ students_2008 %>%
   geom_vline(xintercept = 2009, linetype = 2, col = 'red', linewidth = 0.8) + 
   geom_vline(xintercept = 2014, linetype = 4, col = 'black', linewidth = 0.8) + 
   geom_vline(xintercept = 2016, linetype = 4, col = 'black', linewidth = 0.8) + 
+  geom_vline(xintercept = 2020, linetype = 1, col = 'red', linewidth = 0.8) + 
+  geom_vline(xintercept = 2021, linetype = 1, col = 'red', linewidth = 0.8) + 
   ggthemes::scale_fill_ptol() +
   ggthemes::theme_clean() +
   facet_wrap( ~ var, scales = 'free_y') +
   labs(fill = 'Sex',
        linetype = 'Sex',
-       caption = 'Figure 4: Growth of new students by age. The red vertical lines representes the economical and the black the political crises of 2008-09 and 2014-16, respectively.') +
+       caption = "Figure 4: Growth of new students by age. The red-dashed lines represents the economic crises (2008-09); black-dashed the political has culminating on Dilma Roussef's impeachment (2014-16); and the red-solid the COVID-19 pandemic.") +
   theme(plot.caption.position = "plot",
         plot.caption = element_text(hjust = 0)) +
   ylab('Total of new students') +
   xlab('') +
-  scale_y_continuous(labels = scales::label_number(suffix = "K", scale = 1e-3, big.mark = ','))
+  scale_y_continuous(labels = scales::label_number(suffix = "K", scale = 1e-3, big.mark = '.'))
 
 ```
 

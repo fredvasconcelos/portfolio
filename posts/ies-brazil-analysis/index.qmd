@@ -51,7 +51,7 @@ Nosso objetivo foi entender a evolução das instituições de ensino superior (
 
 As análise de séries temporais apenas a nível de sexo, uma vez que as bases de dados não dispoẽm das mesmas informações.
 
-De acordo com nossas estimativas, em média 971.7 mil mulheres (sd = 785) e 758.7 mil homens (sd = 598) ingressam anualmente nas IES do país. Pôde-se observar uma tendência de crescimento do número de alunos ao longo dos anos, tanto os do sexo masculino, quanto do feminino (Figure 1; Table 1). 
+De acordo com nossas estimativas, em média 971.7 mil mulheres (sd = 785) e 758.7 mil homens (sd = 598) ingressaram anualmente nas IES do país entre 1995 e 2021 Pôde-se observar uma tendência de crescimento do número de alunos ao longo dos anos, tanto os do sexo masculino, quanto do feminino (Figure 1; Table 1). 
 
 ::: panel-tabset
 
@@ -102,26 +102,16 @@ students_2008 %>%
   mutate_if(is.numeric, scales::number_format(big.mark = ',')) %>%
   rename(Sex = 'variable') %>%
   kbl(caption = 'Table 1: Descriptive statistics for new students by sex.', align = 'c', digits = 2) %>%
-  kable_paper('basic', position = 'left', full_width = F)
+  kable_paper('basic', position = 'left', full_width = F) %>%
+  column_spec(1:14, background = 'white')
+
 ```
 
 :::
 
-Utilizamos à base de despesas do governo ([Fonte](https://portaldatransparencia.gov.br/download-de-dados/orcamento-despesa)) para testar a correlação entre o número o número total (Male + Female) de novos estudantes e orçamento do Ministério da Educação (MEC) entre os anos de 2014 e 2021 - não conseguimos obter os orçamentos de anos anteriores. Utilizamos Modelos Aditivos Generalizados (GAM's) por serem mais flexíveis e devido às variáveis testadas não apresentarem uma curva de distribuição normal.
-
-Nosso modelo apresentou uma relação positiviva significativa entre o orçamento do MEC e o número de alunos (p < 0.05) e R² de 0.157. Este resultado é bastante positivo, uma vez que avaliamos no modelo apenas o orçamento do governo federal para o MEC, quando na realidade há ações de outros ministérios e também em escala estadual e municipal que afetam estes resultados.
-
-```{r}
-ts_despesa_hm %>%
-  mutate(total_students = qt_ing_fem_sum + qt_ing_masc_sum,
-         budget = orcamento_realizado_r) %>%
-  gam(data = ., total_students ~ budget) %>%
-  summary()
-```
-
 ## 3.2 Time Series - New students per Region
 
-A região com maior crescimento de alunos ao longo dos anos foi o Sudeste (mean = 877,61 K; sd = 595,20 K), seguido por Nordeste ($321.32 \pm 274.42$), Sul ($301.41 \pm 239.46$), Norte ($135.33 \pm 117.40$) e Centro-Oeste ($169.04 \pm 139.36$).
+A região com maior crescimento de alunos ao longo dos anos foi o Sudeste (mean = 877,61 K; sd = 595,20 K), seguido por Nordeste ($321.32 \pm 274.42$), Sul ($301.41 \pm 239.46$), Norte ($135.33 \pm 117.40$) e Centro-Oeste ($169.04 \pm 139.36$). Acreditamos que este padrão está associado ao tamanho populacional de cada região, posteriormente testaremos esta hipótese.
 
 ::: panel-tabset
 
@@ -179,7 +169,8 @@ students_2008 %>%
   rename(Region = 'no_regiao') %>%
   mutate_if(is.numeric, scales::number_format(big.mark = ',')) %>%
   kbl(caption = 'Table 2: Descriptive statistics for new students by Region.', align = 'c', digits = 2) %>%
-  kable_paper('basic', position = 'left', full_width = F) 
+  kable_paper('basic', position = 'left', full_width = F) %>%
+  column_spec(1:14, background = 'white')
 
 ```
 
@@ -187,13 +178,13 @@ students_2008 %>%
 
 ## 3.3 Time Series - New students per State
 
-O Estado com maior crescimento de alunos ao longo dos anos foi o São Paulo ($553.17 \pm 329.23 K$), seguido por Minas Gerais ($167.92 \pm 128.15 K$) e Rio de Janeiro ($153.61 \pm 115.95 K$) (Figure 3; Table 3).
+Os três estados com maior ingresso de alunos ao longo dos anos foi o São Paulo ($553.17 \pm 329.23 K$), seguido por Minas Gerais ($167.92 \pm 128.15 K$), Rio de Janeiro ($153.61 \pm 115.95 K$), Curitiba ($114,94 \pm 92,11 K$) e Rio Grande do Sul ($110,01 \pm 84,13 K$) (Figure 3; Table 3). Neste caso, o tamanho populacional aparentemente teve menos peso, uma vez que o o quarto estado mais populoso do Brasil (Bahia) ocupa a sexta colocação em número de alunos, indicando que há outras variáveis que precisam ser consideradas nas análises.
 
 ::: panel-tabset
 
 ### Figure 3
 
-```{r, message=FALSE, fig.dim=c(14,10)}
+```{r, message=FALSE, fig.dim=c(14,12)}
 
 students_2008 %>%
   full_join(students_2021) %>%
@@ -246,7 +237,8 @@ students_2008 %>%
   rename(State = 'no_uf') %>%
   mutate_if(is.numeric, scales::number_format(big.mark = ',')) %>%
   kbl(caption = 'Table 3: Descriptive statistics for new students by State.', align = 'c', digits = 2) %>%
-  kable_paper('basic', position = 'left', full_width = F) 
+  kable_paper('basic', position = 'left', full_width = F) %>%
+  column_spec(1:14, background = 'white')
 
 ```
 
@@ -254,7 +246,7 @@ students_2008 %>%
 
 ## 3.4 Time Series - Age of new students
 
-Observa-se que entre os anos 2000 e 2008 há um crescimento no número de ingressantes com idade inferior à 18 anos
+Com relação ao grupo de idade,
 
 ::: panel-tabset
 
@@ -305,19 +297,19 @@ students_2008 %>%
   geom_smooth(method = 'loess', col = 'black') +
   geom_vline(xintercept = 2008, linetype = 2, col = 'red', linewidth = 0.8) + 
   geom_vline(xintercept = 2009, linetype = 2, col = 'red', linewidth = 0.8) + 
-  geom_vline(xintercept = 2014, linetype = 4, col = 'red', linewidth = 0.8) + 
-  geom_vline(xintercept = 2016, linetype = 4, col = 'red', linewidth = 0.8) + 
+  geom_vline(xintercept = 2014, linetype = 4, col = 'black', linewidth = 0.8) + 
+  geom_vline(xintercept = 2016, linetype = 4, col = 'black', linewidth = 0.8) + 
   ggthemes::scale_fill_ptol() +
   ggthemes::theme_clean() +
   facet_wrap( ~ var, scales = 'free_y') +
   labs(fill = 'Sex',
        linetype = 'Sex',
-       caption = 'Figure 4: Growth of new students by age.') +
+       caption = 'Figure 4: Growth of new students by age. The red vertical lines representes the economical and the black the political crises of 2008-09 and 2014-16, respectively.') +
   theme(plot.caption.position = "plot",
         plot.caption = element_text(hjust = 0)) +
   ylab('Total of new students') +
   xlab('') +
-  scale_y_continuous(labels = scales::label_number(suffix = "K", scale = 1e-3, big.mark = '.'))
+  scale_y_continuous(labels = scales::label_number(suffix = "K", scale = 1e-3, big.mark = ','))
 
 ```
 
@@ -352,6 +344,21 @@ students_2008 %>%
   ylab('Total of new students') +
   xlab('')
 ```
+
+# 4. Models
+
+Utilizamos à base de despesas do governo ([Fonte](https://portaldatransparencia.gov.br/download-de-dados/orcamento-despesa)) para testar a correlação entre o número o número total (Male + Female) de novos estudantes e orçamento do Ministério da Educação (MEC) entre os anos de 2014 e 2021 - não conseguimos obter os orçamentos de anos anteriores. Utilizamos Modelos Aditivos Generalizados (GAM's) por serem mais flexíveis e devido às variáveis testadas não apresentarem uma curva de distribuição normal.
+
+Nosso modelo apresentou uma relação positiviva significativa entre o orçamento do MEC e o número de alunos (p < 0.05) e R² de 0.157. Este resultado é bastante positivo, uma vez que avaliamos no modelo apenas o orçamento do governo federal para o MEC, quando na realidade há ações de outros ministérios e também em escala estadual e municipal que afetam estes resultados.
+
+```{r}
+ts_despesa_hm %>%
+  mutate(total_students = qt_ing_fem_sum + qt_ing_masc_sum,
+         budget = orcamento_realizado_r) %>%
+  gam(data = ., total_students ~ budget) %>%
+  summary()
+```
+
 
 # ETL
 

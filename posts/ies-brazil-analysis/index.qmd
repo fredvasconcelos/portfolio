@@ -15,7 +15,7 @@ editor:
 ---
 
 ```{r setup, include=FALSE, message=FALSE}
-knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width = 12, fig.height = 8, out.width = '50%')
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width = 12, fig.height = 8, out.width = '100%')
 #save.image('/home/fredvasconcelos/Documentos/educacao/cursos_data2.RData')
 load('/home/fredvasconcelos/Documentos/educacao/cursos_data2.RData')
 ```
@@ -51,7 +51,7 @@ Nosso objetivo foi entender a evolução das instituições de ensino superior (
 
 As análise de séries temporais apenas a nível de sexo, uma vez que as bases de dados não dispoẽm das mesmas informações.
 
-Pode-se observar uma tendência de crescimento do número de alunos ao longo dos anos, tanto os do sexo masculino, quanto do feminino (Figura 1). As estatísticas descritivas podem ser vistas na Table 1.
+De acordo com nossas estimativas, em média 971.7 mil mulheres (sd = 785) e 758.7 mil homens (sd = 598) ingressam anualmente nas IES do país. Pôde-se observar uma tendência de crescimento do número de alunos ao longo dos anos, tanto os do sexo masculino, quanto do feminino (Figure 1; Table 1). 
 
 ::: panel-tabset
 
@@ -88,19 +88,28 @@ ts_hm %>%
 
 ### Table 1
 
-```{r, warning=FALSE}
-ts_hm1 %>%
+```{r}
+students_2008 %>%
+  full_join(students_2021) %>%
+  select(nu_ano_censo, no_regiao, qt_ing_fem, qt_ing_masc) %>%
+  mutate(tot_ing = qt_ing_fem + qt_ing_masc) %>%
+  group_by(nu_ano_censo) %>%
+  summarise_if(is.numeric, sum) %>%
+  ungroup() %>%
+  select(2:3) %>%
+  get_summary_stats() %>%
   mutate(variable = ifelse(variable == 'qt_ing_fem', 'Female', 'Male')) %>%
-  select(Year = 1, Sex = 2, 3:14) %>%
-  kbl(caption = 'Table 1: Descriptive statistics for new students around the years.', align = 'c', digits = 2) %>%
-  kable_paper('hover', position = 'left', full_width = F)
+  mutate_if(is.numeric, scales::number_format(big.mark = ',')) %>%
+  rename(Sex = 'variable') %>%
+  kbl(caption = 'Table 1: Descriptive statistics for new students by sex.', align = 'c', digits = 2) %>%
+  kable_paper('basic', position = 'left', full_width = F)
 ```
 
 :::
 
-Utilizamos à base de despesas do governo ([Fonte](https://portaldatransparencia.gov.br/download-de-dados/orcamento-despesa)) para testar a correlação entre o número o número total (Male + Female) de novos estudantes e orçamento do Ministério da Educação (MD) entre os anos de 2014 e 2021 - não conseguimos obter os orçamentos de anos anteriores. Utilizamos Modelos Aditivos Generalizados (GAM's) por serem mais flexíveis e devido às variáveis testadas não apresentarem uma curva de distribuição normal.
+Utilizamos à base de despesas do governo ([Fonte](https://portaldatransparencia.gov.br/download-de-dados/orcamento-despesa)) para testar a correlação entre o número o número total (Male + Female) de novos estudantes e orçamento do Ministério da Educação (MEC) entre os anos de 2014 e 2021 - não conseguimos obter os orçamentos de anos anteriores. Utilizamos Modelos Aditivos Generalizados (GAM's) por serem mais flexíveis e devido às variáveis testadas não apresentarem uma curva de distribuição normal.
 
-Nosso modelo apresentou uma relação positiviva significativa entre o orçamento do MD e o número de alunos (p < 0.05).
+Nosso modelo apresentou uma relação positiviva significativa entre o orçamento do MEC e o número de alunos (p < 0.05) e R² de 0.157. Este resultado é bastante positivo, uma vez que avaliamos no modelo apenas o orçamento do governo federal para o MEC, quando na realidade há ações de outros ministérios e também em escala estadual e municipal que afetam estes resultados.
 
 ```{r}
 ts_despesa_hm %>%
@@ -108,6 +117,240 @@ ts_despesa_hm %>%
          budget = orcamento_realizado_r) %>%
   gam(data = ., total_students ~ budget) %>%
   summary()
+```
+
+## 3.2 Time Series - New students per Region
+
+A região com maior crescimento de alunos ao longo dos anos foi o Sudeste (mean = 877,61 K; sd = 595,20 K), seguido por Nordeste ($321.32 \pm 274.42$), Sul ($301.41 \pm 239.46$), Norte ($135.33 \pm 117.40$) e Centro-Oeste ($169.04 \pm 139.36$).
+
+::: panel-tabset
+
+### Figure 2
+
+```{r, message=FALSE, fig.dim=c(12, 8)}
+students_2008 %>%
+  full_join(students_2021) %>%
+  group_by(nu_ano_censo, no_regiao) %>%
+  summarise_at(c('qt_ing_fem', 'qt_ing_masc'), sum) %>%
+  gather('Sex', 'value', 3:4) %>%
+  na.omit() %>%
+  mutate(Sex = ifelse(Sex == 'qt_ing_fem', 'Female', 'Male')) %>%
+  ggplot(aes(x = nu_ano_censo, 
+             y = value,
+             linetype = Sex,
+             fill = Sex)) +
+  geom_bar(stat = 'identity', position = 'dodge') +
+  geom_smooth(aes(linetype = Sex, fill = Sex), 
+              col = 'black',
+              alpha = 0.3,
+              method = 'gam') +
+  theme_clean() +
+  scale_fill_ptol() +
+  scale_y_continuous(labels = scales::number_format(suffix = ' K', big.mark = '.', decimal.mark = ',', scale = 1e-3)) +
+  scale_x_continuous(breaks = seq(1995, 2021, by = 4)) +
+  facet_wrap(~ no_regiao, scales = 'free_y') +
+  labs(fill = 'Sex',
+       linetype = 'Sex',
+       caption = 'Figure 2: Growth of new students around the years per Region.') +
+  theme(plot.caption.position = "plot",
+        plot.caption = element_text(hjust = 0)) +
+  ylab('Total of new students') +
+  xlab('')
+```
+
+### Table 2
+
+```{r, message=FALSE}
+students_2008 %>%
+  full_join(students_2021) %>%
+  select(nu_ano_censo, no_regiao, qt_ing_fem, qt_ing_masc) %>%
+  mutate(tot_ing = qt_ing_fem + qt_ing_masc) %>%
+  group_by(nu_ano_censo, no_regiao) %>%
+  summarise_if(is.numeric, sum) %>%
+  ungroup() %>%
+  select(2:5) %>%
+  group_by(no_regiao) %>%
+  get_summary_stats() %>%
+  na.omit() %>%
+  mutate(variable = case_when(variable == 'qt_ing_fem' ~ 'Female',
+                              variable == 'qt_ing_masc' ~ 'Male',
+                              variable == 'tot_ing' ~ 'Total',
+                              )) %>%
+  rename(Region = 'no_regiao') %>%
+  mutate_if(is.numeric, scales::number_format(big.mark = ',')) %>%
+  kbl(caption = 'Table 2: Descriptive statistics for new students by Region.', align = 'c', digits = 2) %>%
+  kable_paper('basic', position = 'left', full_width = F) 
+
+```
+
+:::
+
+## 3.3 Time Series - New students per State
+
+O Estado com maior crescimento de alunos ao longo dos anos foi o São Paulo ($553.17 \pm 329.23 K$), seguido por Minas Gerais ($167.92 \pm 128.15 K$) e Rio de Janeiro ($153.61 \pm 115.95 K$) (Figure 3; Table 3).
+
+::: panel-tabset
+
+### Figure 3
+
+```{r, message=FALSE, fig.dim=c(14,10)}
+
+students_2008 %>%
+  full_join(students_2021) %>%
+  group_by(nu_ano_censo, no_uf) %>%
+  summarise_at(c('qt_ing_fem', 'qt_ing_masc'), sum) %>%
+  gather('Sex', 'value', 3:4) %>%
+  na.omit() %>%
+  mutate(Sex = ifelse(Sex == 'qt_ing_fem', 'Female', 'Male')) %>%
+  ggplot(aes(x = nu_ano_censo, 
+             y = value,
+             linetype = Sex,
+             fill = Sex)) +
+  geom_bar(stat = 'identity', position = 'dodge') +
+  geom_smooth(aes(linetype = Sex, fill = Sex), 
+              col = 'black',
+              alpha = 0.3,
+              method = 'gam') +
+  theme_clean() +
+  scale_fill_ptol() +
+  scale_y_continuous(labels = scales::number_format(suffix = ' K', big.mark = '.', decimal.mark = ',', scale = 1e-3)) +
+  scale_x_continuous(breaks = seq(1995, 2021, by = 4)) +
+  facet_wrap(~ no_uf, scales = 'free_y', ncol = 3) +
+  labs(fill = 'Sex',
+       linetype = 'Sex',
+       caption = 'Figure 3: Growth of new students around the years per State') +
+  theme(plot.caption.position = "plot",
+        plot.caption = element_text(hjust = 0)) +
+  ylab('Total of new students') +
+  xlab('')
+```
+
+### Table 3
+
+```{r, message=FALSE}
+students_2008 %>%
+  full_join(students_2021) %>%
+  select(nu_ano_censo, no_uf, qt_ing_fem, qt_ing_masc) %>%
+  mutate(tot_ing = qt_ing_fem + qt_ing_masc) %>%
+  group_by(nu_ano_censo, no_uf) %>%
+  summarise_if(is.numeric, sum) %>%
+  ungroup() %>%
+  select(2:5) %>%
+  group_by(no_uf) %>%
+  get_summary_stats() %>%
+  na.omit() %>%
+  mutate(variable = case_when(variable == 'qt_ing_fem' ~ 'Female',
+                              variable == 'qt_ing_masc' ~ 'Male',
+                              variable == 'tot_ing' ~ 'Total',
+                              )) %>%
+  rename(State = 'no_uf') %>%
+  mutate_if(is.numeric, scales::number_format(big.mark = ',')) %>%
+  kbl(caption = 'Table 3: Descriptive statistics for new students by State.', align = 'c', digits = 2) %>%
+  kable_paper('basic', position = 'left', full_width = F) 
+
+```
+
+:::
+
+## 3.4 Time Series - Age of new students
+
+Observa-se que entre os anos 2000 e 2008 há um crescimento no número de ingressantes com idade inferior à 18 anos
+
+::: panel-tabset
+
+### 2000 ~ 2008
+
+```{r, message=FALSE, error=FALSE, fig.dim=c(14,10), warning=FALSE}
+students_2008 %>%
+  select(nu_ano_censo, 
+         qt_ing_0_17 = qt_ing_0_18, 
+         qt_ing_18_24 = qt_ing_19_24, 
+         qt_ing_25_29, 
+         qt_ing_30_34, 
+         qt_ing_35_39,
+         qt_ing_40_44, qt_ing_45_49, 
+         qt_ing_55_59, qt_ing_50_54,
+         qt_ing_60_64, qt_ing_65_mais) %>%
+  mutate(qt_ing_40_49 =  qt_ing_40_44 + qt_ing_45_49,
+         qt_ing_50_59 = qt_ing_55_59 + qt_ing_50_54,
+         qt_ing_60_mais = qt_ing_60_64 + qt_ing_65_mais) %>%
+  select(nu_ano_censo, qt_ing_0_17, qt_ing_18_24, qt_ing_25_29, qt_ing_30_34, 
+         qt_ing_35_39, qt_ing_40_49, qt_ing_50_59, qt_ing_60_mais) %>%
+  filter(nu_ano_censo > 1999) %>%
+  full_join(students_2021) %>%
+  select(nu_ano_censo, qt_ing_0_17, qt_ing_18_24, qt_ing_25_29, qt_ing_30_34, 
+         qt_ing_35_39, qt_ing_40_49, qt_ing_50_59, qt_ing_60_mais) %>%
+  group_by(nu_ano_censo) %>%
+  summarise_if(is.numeric, sum, na.rm = T) %>% 
+  gather('var', 'value', 2:9) %>%
+  mutate(var = case_when(var == 'qt_ing_0_17' ~ '<18',
+                         var == 'qt_ing_18_24' ~ '18~24',
+                         var == 'qt_ing_25_29' ~ '25~29',
+                         var == 'qt_ing_30_34' ~ '30~34', 
+                         var == 'qt_ing_35_39' ~ '35~39', 
+                         var == 'qt_ing_40_49' ~ '40~49',
+                         var == 'qt_ing_50_59' ~ '50~59',
+                         var == 'qt_ing_60_mais' ~ '>60'),
+         var = fct_relevel(as.factor(var), '<18', '18~24', '25~29',
+                           '30~34', '35~39', '40~49', 
+                           '50~59', '>60'),
+         var = fct_relevel(as.factor(var), '<18', '18~24', '25~29',
+                           '30~34', '35~39', '40~49', 
+                           '50~59', '>60')) %>%
+  ggplot(aes(x = nu_ano_censo, 
+             y = value,
+             linetype = var,
+             fill = var)) +
+  geom_bar(stat = 'identity', position = 'dodge') +
+  geom_smooth(method = 'loess', col = 'black') +
+  geom_vline(xintercept = 2008, linetype = 2, col = 'red', linewidth = 0.8) + 
+  geom_vline(xintercept = 2009, linetype = 2, col = 'red', linewidth = 0.8) + 
+  geom_vline(xintercept = 2014, linetype = 4, col = 'red', linewidth = 0.8) + 
+  geom_vline(xintercept = 2016, linetype = 4, col = 'red', linewidth = 0.8) + 
+  ggthemes::scale_fill_ptol() +
+  ggthemes::theme_clean() +
+  facet_wrap( ~ var, scales = 'free_y') +
+  labs(fill = 'Sex',
+       linetype = 'Sex',
+       caption = 'Figure 4: Growth of new students by age.') +
+  theme(plot.caption.position = "plot",
+        plot.caption = element_text(hjust = 0)) +
+  ylab('Total of new students') +
+  xlab('') +
+  scale_y_continuous(labels = scales::label_number(suffix = "K", scale = 1e-3, big.mark = '.'))
+
+```
+
+:::
+```{r, message=FALSE}
+students_2008 %>%
+  full_join(students_2021) %>%
+  group_by(nu_ano_censo, no_uf) %>%
+  summarise_at(c('qt_ing_fem', 'qt_ing_masc'), sum) %>%
+  gather('Sex', 'value', 3:4) %>%
+  na.omit() %>%
+  mutate(Sex = ifelse(Sex == 'qt_ing_fem', 'Female', 'Male')) %>%
+  ggplot(aes(x = nu_ano_censo, 
+             y = value,
+             linetype = Sex,
+             fill = Sex)) +
+  geom_bar(stat = 'identity', position = 'dodge') +
+  geom_smooth(aes(linetype = Sex, fill = Sex), 
+              col = 'black',
+              alpha = 0.3,
+              method = 'gam') +
+  theme_clean() +
+  scale_fill_ptol() +
+  scale_y_continuous(labels = scales::number_format(suffix = ' K', big.mark = '.', decimal.mark = ',', scale = 1e-3)) +
+  scale_x_continuous(breaks = seq(1995, 2021, by = 4)) +
+  facet_wrap(~ no_uf, scales = 'free_y', ncol = 3) +
+  labs(fill = 'Sex',
+       linetype = 'Sex',
+       caption = 'Figure 3: Growth of new students around the years per State') +
+  theme(plot.caption.position = "plot",
+        plot.caption = element_text(hjust = 0)) +
+  ylab('Total of new students') +
+  xlab('')
 ```
 
 # ETL

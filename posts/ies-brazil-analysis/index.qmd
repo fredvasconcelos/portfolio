@@ -18,9 +18,7 @@ editor:
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width = 12, fig.height = 8, out.width = '100%')
 #save.image('/home/fredvasconcelos/Documentos/educacao/cursos_data2.RData')
 load('/home/fredvasconcelos/Documentos/educacao/cursos_data2.RData')
-```
 
-```{r, echo=FALSE, message=FALSE}
 library(tidyverse)
 library(rstatix)
 library(ggplot2)
@@ -58,6 +56,8 @@ De acordo com nossas estimativas, em média 971.7 mil mulheres (sd = 785) e 758.
 ### Figure 1
 
 ```{r, message=FALSE, fig.dim=c(8,6)}
+#| code-fold: true
+
 ts_hm %>%
   gather('var', 'value', 3:10) %>%
   separate(var, c('var1', 'var2'), sep = 'qt_ing_') %>%
@@ -103,7 +103,8 @@ students_2008 %>%
   rename(Sex = 'variable') %>%
   kbl(caption = 'Table 1: Descriptive statistics for new students by sex.', align = 'c', digits = 2) %>%
   kable_paper('basic', position = 'left', full_width = F) %>%
-  column_spec(1:14, background = 'white')
+  column_spec(1:14, background = 'white', color = 'black') %>%
+  row_spec(1, background = 'white', color = 'black')
 
 ```
 
@@ -111,13 +112,15 @@ students_2008 %>%
 
 ## 3.2 Time Series - New students per Region
 
-A região com maior crescimento de alunos ao longo dos anos foi o Sudeste (mean = 877,61 K; sd = 595,20 K), seguido por Nordeste ($321.32 \pm 274.42$), Sul ($301.41 \pm 239.46$), Norte ($135.33 \pm 117.40$) e Centro-Oeste ($169.04 \pm 139.36$). Acreditamos que este padrão está associado ao tamanho populacional de cada região, posteriormente testaremos esta hipótese.
+A região com maior crescimento de alunos ao longo dos anos foi o Sudeste (mean = 877,61 K; sd = 595,20 K), seguido por Nordeste ($321.32 \ \pm \ 274.42$), Sul ($301.41 \ \pm \ 239.46$), Norte ($135.33 \ \pm \ 117.40$) e Centro-Oeste ($169.04 \ \pm \ 139.36$). Acreditamos que este padrão está associado ao tamanho populacional de cada região, posteriormente testaremos esta hipótese.
 
 ::: panel-tabset
 
 ### Figure 2
 
 ```{r, message=FALSE, fig.dim=c(12, 8)}
+#| code-fold: true
+
 students_2008 %>%
   full_join(students_2021) %>%
   group_by(nu_ano_censo, no_regiao) %>%
@@ -151,6 +154,8 @@ students_2008 %>%
 ### Table 2
 
 ```{r, message=FALSE}
+#| code-fold: true
+
 students_2008 %>%
   full_join(students_2021) %>%
   select(nu_ano_censo, no_regiao, qt_ing_fem, qt_ing_masc) %>%
@@ -178,13 +183,14 @@ students_2008 %>%
 
 ## 3.3 Time Series - New students per State
 
-Os três estados com maior ingresso de alunos ao longo dos anos foi o São Paulo ($553.17 \pm 329.23 K$), seguido por Minas Gerais ($167.92 \pm 128.15 K$), Rio de Janeiro ($153.61 \pm 115.95 K$), Curitiba ($114,94 \pm 92,11 K$) e Rio Grande do Sul ($110,01 \pm 84,13 K$) (Figure 3; Table 3). Neste caso, o tamanho populacional aparentemente teve menos peso, uma vez que o o quarto estado mais populoso do Brasil (Bahia) ocupa a sexta colocação em número de alunos, indicando que há outras variáveis que precisam ser consideradas nas análises.
+Os cinco estados com a maior média de novos alunos ao longo dos anos foi o São Paulo ($553.17 \ \pm \ 329.23 K$), seguido por Minas Gerais ($167.92 \ \pm \ 128.15 K$), Rio de Janeiro ($153.61 \ \pm \ 115.95 K$), Paraná ($114.93 \ \pm \ 92.11 K$) e Rio Grande do Sul ($110.01 \ \pm \ 84.13 K$) (Figure 3; Table 3). Contudo, diferentemente das grandes-regiões, o quarto estado mais populoso do país (Bahia) ocupa a sexta posição em número de novos ingressantes, possivelmente pelo efeito de outras variáveis.
 
 ::: panel-tabset
 
 ### Figure 3
 
-```{r, message=FALSE, fig.dim=c(14,12)}
+```{r, message=FALSE, fig.dim=c(16,12)}
+#| code-fold: true
 
 students_2008 %>%
   full_join(students_2021) %>%
@@ -219,6 +225,8 @@ students_2008 %>%
 ### Table 3
 
 ```{r, message=FALSE}
+#| code-fold: true
+
 students_2008 %>%
   full_join(students_2021) %>%
   select(nu_ano_censo, no_uf, qt_ing_fem, qt_ing_masc) %>%
@@ -238,7 +246,8 @@ students_2008 %>%
   mutate_if(is.numeric, scales::number_format(big.mark = ',')) %>%
   kbl(caption = 'Table 3: Descriptive statistics for new students by State.', align = 'c', digits = 2) %>%
   kable_paper('basic', position = 'left', full_width = F) %>%
-  column_spec(1:14, background = 'white')
+  column_spec(1:14, background = 'white') %>%
+  row_spec(1, background = 'white', color = 'black')
 
 ```
 
@@ -246,13 +255,17 @@ students_2008 %>%
 
 ## 3.4 Time Series - Age of new students
 
-Com relação ao grupo de idade,
+As classes de idade com maior número de ingressos foram àquelas entre: 18~25 (mean = 1.2M; sd = 505.5K), seguido por 25~29 ($402.4\ \pm \ 161.0K$), 30~34 ($265.8 \ \pm \ 140.7$), 35~39 ($178.1 \ \pm \ 115.7$) e 40~49 ($165.1 \ \pm \ 118.1$) (Figure 5; Table 5). Estes resultados condizem com a pirâmide etária do país nos anos de 2012 e 2021 (Figure 4).
+
+![Figure 4: Age pyramid of Brazil in 2012 and 2021.](https://educa.ibge.gov.br/images/educa/jovens/populacao/2022_pirmide.jpg)
 
 ::: panel-tabset
 
-### 2000 ~ 2008
+### Figure 5
 
 ```{r, message=FALSE, error=FALSE, fig.dim=c(14,10), warning=FALSE}
+#| code-fold: true
+
 students_2008 %>%
   select(nu_ano_censo, 
          qt_ing_0_17 = qt_ing_0_18, 
@@ -316,36 +329,7 @@ students_2008 %>%
 ```
 
 :::
-```{r, message=FALSE}
-students_2008 %>%
-  full_join(students_2021) %>%
-  group_by(nu_ano_censo, no_uf) %>%
-  summarise_at(c('qt_ing_fem', 'qt_ing_masc'), sum) %>%
-  gather('Sex', 'value', 3:4) %>%
-  na.omit() %>%
-  mutate(Sex = ifelse(Sex == 'qt_ing_fem', 'Female', 'Male')) %>%
-  ggplot(aes(x = nu_ano_censo, 
-             y = value,
-             linetype = Sex,
-             fill = Sex)) +
-  geom_bar(stat = 'identity', position = 'dodge') +
-  geom_smooth(aes(linetype = Sex, fill = Sex), 
-              col = 'black',
-              alpha = 0.3,
-              method = 'gam') +
-  theme_clean() +
-  scale_fill_ptol() +
-  scale_y_continuous(labels = scales::number_format(suffix = ' K', big.mark = '.', decimal.mark = ',', scale = 1e-3)) +
-  scale_x_continuous(breaks = seq(1995, 2021, by = 4)) +
-  facet_wrap(~ no_uf, scales = 'free_y', ncol = 3) +
-  labs(fill = 'Sex',
-       linetype = 'Sex',
-       caption = 'Figure 3: Growth of new students around the years per State') +
-  theme(plot.caption.position = "plot",
-        plot.caption = element_text(hjust = 0)) +
-  ylab('Total of new students') +
-  xlab('')
-```
+
 
 # 4. Models
 
